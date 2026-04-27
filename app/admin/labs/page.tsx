@@ -93,7 +93,7 @@ export default function LabsPage() {
       </Card>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
+        <DialogContent aria-describedby={undefined}>
           <DialogHeader><DialogTitle>{editing ? "Edit Lab" : "Tambah Lab Baru"}</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-2">
@@ -113,7 +113,7 @@ export default function LabsPage() {
       </Dialog>
 
       <Dialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
-        <DialogContent>
+        <DialogContent aria-describedby={undefined}>
           <DialogHeader><DialogTitle>Hapus Lab</DialogTitle></DialogHeader>
           <p className="text-sm text-gray-600">Hapus <strong>{deleteTarget?.name}</strong>? Tindakan ini tidak dapat dibatalkan.</p>
           <DialogFooter>

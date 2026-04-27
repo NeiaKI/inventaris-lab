@@ -96,7 +96,7 @@ export default function LabSelectionPage() {
       </div>
 
       <Dialog open={!!confirmLab} onOpenChange={() => setConfirmLab(null)}>
-        <DialogContent>
+        <DialogContent aria-describedby={undefined}>
           <DialogHeader><DialogTitle>Mulai Sesi?</DialogTitle></DialogHeader>
           <p className="text-sm text-gray-600">Kamu akan memulai sesi penggunaan <strong>{selectedLab?.name}</strong>. Pastikan kamu benar-benar berada di lab tersebut.</p>
           <DialogFooter>
