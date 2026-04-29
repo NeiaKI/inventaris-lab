@@ -2,15 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { getSession } from "@/lib/auth";
+import { getSession, clearSession } from "@/lib/auth";
 import { AdminSidebar } from "@/components/admin/sidebar";
-import { Menu } from "lucide-react";
+import { Menu, LogOut } from "lucide-react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const [status, setStatus] = useState<"loading" | "authed" | "unauthed">("loading");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  const handleLogout = () => { clearSession(); router.push("/"); };
 
   useEffect(() => {
     const u = getSession();
@@ -29,7 +31,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (status === "unauthed") return <>{children}</>;
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-gray-50">
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
@@ -50,7 +52,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           >
             <Menu className="h-5 w-5" />
           </button>
-          <span className="font-semibold text-gray-800 text-sm">Inventaris Lab</span>
+          <span className="flex-1 font-semibold text-gray-800 text-sm">Inventaris Lab</span>
+          <button
+            onClick={handleLogout}
+            className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600"
+            aria-label="Keluar"
+          >
+            <LogOut className="h-5 w-5" />
+          </button>
         </header>
 
         <main className="flex-1 overflow-y-auto">{children}</main>
