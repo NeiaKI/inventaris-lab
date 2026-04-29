@@ -107,7 +107,11 @@ export default function DashboardPage() {
             <CardTitle className="text-base flex items-center gap-2">
               <AlertCircle className="h-4 w-4 text-red-500" />
               Peringatan Terbaru
-              {alerts.length > 0 && <Badge variant="destructive" className="ml-1">{alerts.length}</Badge>}
+              {alerts.length > 0 && (
+                <span className="inline-flex items-center justify-center bg-red-500 text-white text-xs font-bold rounded-full h-5 min-w-[20px] px-1 ml-0.5">
+                  {alerts.length}
+                </span>
+              )}
               {alerts.length > 0 && (
                 <button
                   onClick={() => setConfirmClearAll(true)}
@@ -120,36 +124,48 @@ export default function DashboardPage() {
               )}
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pb-3">
             {alerts.length === 0 ? (
               <div className="flex items-center gap-2 text-gray-500 text-sm py-4">
                 <CheckCircle2 className="h-4 w-4 text-green-500" />
                 Semua peringatan telah diselesaikan.
               </div>
             ) : (
-              <div className="space-y-2 max-h-64 overflow-y-auto">
-                {alerts.map((a) => (
-                  <Alert key={a.id} variant="destructive" className="py-2.5 pr-2">
-                    <TriangleAlert className="h-4 w-4" />
-                    <div className="flex items-start justify-between gap-2 w-full">
-                      <div className="flex-1 min-w-0">
-                        <AlertTitle className="text-xs font-semibold uppercase tracking-wide">
-                          {a.type === "selisih" ? "Selisih Barang" : "Barang Rusak"} · <span className="normal-case font-normal">{itemMap[a.lab_item_id]}</span>
-                        </AlertTitle>
-                        <AlertDescription className="text-xs mt-0.5">{a.message}</AlertDescription>
-                        <p className="text-xs text-red-400 mt-1">{fmt(a.created_at)}</p>
-                      </div>
-                      <button
-                        onClick={() => resolveAlert(a.id)}
-                        className="p-1 rounded hover:bg-red-200 text-red-400 hover:text-red-700 transition-colors shrink-0 mt-0.5"
-                        title="Selesaikan"
+              <>
+                <div className="space-y-2">
+                  {alerts.slice().reverse().slice(0, 5).map((a) => {
+                    const isSelisih = a.type === "selisih";
+                    return (
+                      <div
+                        key={a.id}
+                        className={`flex items-start gap-3 p-3 rounded-lg border ${isSelisih ? "bg-orange-50 border-orange-100" : "bg-red-50 border-red-100"}`}
                       >
-                        <X className="h-3.5 w-3.5" />
-                      </button>
-                    </div>
-                  </Alert>
-                ))}
-              </div>
+                        <TriangleAlert className={`h-4 w-4 shrink-0 mt-0.5 ${isSelisih ? "text-orange-500" : "text-red-500"}`} />
+                        <div className="flex-1 min-w-0">
+                          <p className={`text-xs font-semibold ${isSelisih ? "text-orange-700" : "text-red-700"}`}>
+                            {isSelisih ? "Selisih Barang" : "Barang Rusak"}
+                            <span className="font-normal ml-1">· {itemMap[a.lab_item_id] ?? "-"}</span>
+                          </p>
+                          <p className="text-xs text-gray-600 mt-0.5 line-clamp-2">{a.message}</p>
+                          <p className={`text-xs mt-1 ${isSelisih ? "text-orange-400" : "text-red-400"}`}>{fmt(a.created_at)}</p>
+                        </div>
+                        <button
+                          onClick={() => resolveAlert(a.id)}
+                          className="p-1 rounded-md hover:bg-white/70 text-gray-400 hover:text-gray-600 transition-colors shrink-0"
+                          title="Selesaikan"
+                        >
+                          <X className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+                {alerts.length > 5 && (
+                  <p className="text-xs text-gray-400 text-center mt-3 pt-3 border-t border-gray-100">
+                    dan <span className="font-medium text-gray-600">{alerts.length - 5} peringatan lainnya</span> — gunakan "Selesaikan Semua" untuk membersihkan
+                  </p>
+                )}
+              </>
             )}
           </CardContent>
         </Card>
