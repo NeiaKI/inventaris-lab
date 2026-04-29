@@ -23,11 +23,16 @@ export default function AdminLoginPage() {
     if (!username || !password) { setError("Username dan password tidak boleh kosong."); return; }
     setLoading(true);
     setError("");
-    const user = await loginAsync(username, password);
-    setLoading(false);
-    if (!user || user.role !== "admin") { setError("Username atau password salah."); return; }
-    saveSession(user);
-    router.push("/admin/dashboard");
+    try {
+      const user = await loginAsync(username, password);
+      setLoading(false);
+      if (!user || user.role !== "admin") { setError("Username atau password salah."); return; }
+      saveSession(user);
+      router.push("/admin/dashboard");
+    } catch {
+      setLoading(false);
+      setError("Terlalu banyak percobaan. Tunggu 1 menit dan coba lagi.");
+    }
   };
 
   return (

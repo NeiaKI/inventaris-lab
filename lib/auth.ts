@@ -9,9 +9,13 @@ export async function loginAsync(selected: string, password: string): Promise<Au
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ selected, password }),
     });
-    if (!res.ok) return null;
+    if (!res.ok) {
+      if (res.status === 429) throw new Error("rate_limited");
+      return null;
+    }
     return res.json();
-  } catch {
+  } catch (e) {
+    if ((e as Error).message === "rate_limited") throw e;
     return null;
   }
 }
@@ -29,5 +33,9 @@ export function saveSession(user: AuthUser) {
 }
 
 export function clearSession() {
-  sessionStorage.removeItem("inv_user");
+  if (typeof window !== "undefined") {
+    sessionStorage.removeItem("inv_user");
+    // Clear server-side cookie (fire and forget)
+    fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
+  }
 }

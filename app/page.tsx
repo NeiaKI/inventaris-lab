@@ -43,11 +43,16 @@ export default function LoginPage() {
     if (!password) { setError("Password tidak boleh kosong."); return; }
     setLoading(true);
     setError("");
-    const user = await loginAsync(selected, password);
-    setLoading(false);
-    if (!user) { setError("Username atau password salah."); return; }
-    saveSession(user);
-    router.push("/kelas/labs");
+    try {
+      const user = await loginAsync(selected, password);
+      setLoading(false);
+      if (!user) { setError("Username atau password salah."); return; }
+      saveSession(user);
+      router.push("/kelas/labs");
+    } catch {
+      setLoading(false);
+      setError("Terlalu banyak percobaan. Tunggu 1 menit dan coba lagi.");
+    }
   };
 
   return (
