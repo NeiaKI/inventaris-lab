@@ -6,7 +6,8 @@ import { cn } from "@/lib/utils";
 import { clearSession } from "@/lib/auth";
 import { LayoutDashboard, FlaskConical, Package, Users, ClipboardList, LogOut, AlertTriangle, X, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useLostReports } from "@/lib/store";
+import { useLostReports, useAlerts } from "@/lib/store";
+import { NotificationBell } from "./notification-bell";
 
 interface AdminSidebarProps {
   isOpen?: boolean;
@@ -17,12 +18,14 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [lostReports] = useLostReports();
+  const [alerts] = useAlerts();
   const newLostCount = lostReports.filter((r) => r.status === "baru").length;
+  const alertCount = alerts.length;
 
   const handleLogout = () => { clearSession(); router.push("/"); };
 
   const navItems = [
-    { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard, badge: 0 },
+    { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard, badge: alertCount + newLostCount },
     { href: "/admin/labs", label: "Laboratorium", icon: FlaskConical, badge: 0 },
     { href: "/admin/items", label: "Master Barang", icon: Package, badge: 0 },
     { href: "/admin/classes", label: "Akun Kelas", icon: Users, badge: 0 },
@@ -51,12 +54,15 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
             <p className="text-xs text-gray-400">SMK Bintang Nusantara</p>
           </div>
         </div>
-        {/* Close button — mobile only */}
-        {onClose && (
-          <button onClick={onClose} className="lg:hidden p-1 rounded hover:bg-gray-700 text-gray-400" aria-label="Tutup menu">
-            <X className="h-4 w-4" />
-          </button>
-        )}
+        <div className="flex items-center gap-1">
+          <NotificationBell variant="sidebar" />
+          {/* Close button — mobile only */}
+          {onClose && (
+            <button onClick={onClose} className="lg:hidden p-1 rounded hover:bg-gray-700 text-gray-400" aria-label="Tutup menu">
+              <X className="h-4 w-4" />
+            </button>
+          )}
+        </div>
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1">
