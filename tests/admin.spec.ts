@@ -46,7 +46,7 @@ test("edit lab yang sudah ada", async ({ page }) => {
   await loginAdmin(page);
   await page.goto("/admin/labs");
   await expect(page.getByRole("row").nth(1)).toBeVisible({ timeout: 10000 });
-  await page.getByRole("row").nth(1).getByRole("button").first().click();
+  await page.getByRole("row").nth(1).getByRole("button").nth(1).click();
   // Edit location only (not name) to keep lab names stable for kelas tests
   await page.getByLabel("Lokasi").fill("Gedung A, Lantai 2 (Updated)");
   await page.getByRole("button", { name: "Simpan" }).click();

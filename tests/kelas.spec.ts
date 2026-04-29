@@ -40,8 +40,9 @@ test("alur lengkap sesi: mulai → aktif → checkout → result aman", async ({
 
   await page.getByRole("button", { name: "Akhiri Sesi & Cek Barang" }).click();
 
-  await expect(page.getByText("Checklist Akhir Sesi")).toBeVisible({ timeout: 10000 });
-  await expect(page.locator("main").getByText("Lab Komputer 1")).toBeVisible();
+  await expect(page).toHaveURL(/\/kelas\/checkout\//, { timeout: 10000 });
+  await expect(page.getByText("Checklist Akhir Sesi")).toBeVisible({ timeout: 15000 });
+  await expect(page.locator("main").getByText("Lab Komputer 1")).toBeVisible({ timeout: 10000 });
 
   await page.getByRole("button", { name: "Submit & Tutup Sesi" }).click();
 

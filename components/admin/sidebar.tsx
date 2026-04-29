@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { clearSession } from "@/lib/auth";
-import { LayoutDashboard, FlaskConical, Package, Users, ClipboardList, LogOut, AlertTriangle, X, Settings } from "lucide-react";
+import { LayoutDashboard, FlaskConical, Package, Users, ClipboardList, LogOut, AlertTriangle, X, Settings, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLostReports, useAlerts } from "@/lib/store";
 import { NotificationBell } from "./notification-bell";
@@ -31,6 +31,7 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
     { href: "/admin/classes", label: "Akun Kelas", icon: Users, badge: 0 },
     { href: "/admin/sessions", label: "Log Sesi", icon: ClipboardList, badge: 0 },
     { href: "/admin/lost-reports", label: "Barang Hilang", icon: AlertTriangle, badge: newLostCount },
+    { href: "/admin/stats", label: "Statistik", icon: BarChart3, badge: 0 },
     { href: "/admin/settings", label: "Pengaturan", icon: Settings, badge: 0 },
   ];
 

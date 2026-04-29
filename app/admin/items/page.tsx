@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useRef, useState, useMemo } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,13 +9,27 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Pencil, Trash2, TriangleAlert } from "lucide-react";
+import { Plus, Pencil, Trash2, TriangleAlert, Upload, Download } from "lucide-react";
 import { useItems, useLabs } from "@/lib/store";
 import { toast } from "sonner";
 import type { LabItem } from "@/lib/types";
 
 type FormState = Omit<LabItem, "id">;
 const EMPTY: FormState = { lab_id: 0, name: "", category: "", initial_quantity: 0, functional_quantity: 0 };
+
+const CSV_TEMPLATE = `nama_lab,nama_barang,kategori,jumlah_awal,jumlah_berfungsi
+Lab Komputer 1,PC / Komputer,Hardware,20,20
+Lab Komputer 1,Monitor,Hardware,20,20`;
+
+function downloadTemplate() {
+  const blob = new Blob([CSV_TEMPLATE], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "template-import-barang.csv";
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 export default function ItemsPage() {
   const [items, setItems] = useItems();
@@ -25,8 +39,13 @@ export default function ItemsPage() {
   const [form, setForm] = useState<FormState>(EMPTY);
   const [filterLab, setFilterLab] = useState<string>("all");
   const [deleteTarget, setDeleteTarget] = useState<LabItem | null>(null);
+  const [importOpen, setImportOpen] = useState(false);
+  const [importRows, setImportRows] = useState<FormState[]>([]);
+  const [importError, setImportError] = useState("");
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const labMap = useMemo(() => Object.fromEntries(labs.map((l) => [l.id, l.name])), [labs]);
+  const labNameMap = useMemo(() => Object.fromEntries(labs.map((l) => [l.name.toLowerCase(), l.id])), [labs]);
   const filtered = useMemo(() => filterLab === "all" ? items : items.filter((i) => i.lab_id === Number(filterLab)), [items, filterLab]);
 
   const openCreate = () => { setEditing(null); setForm({ ...EMPTY, lab_id: labs[0]?.id ?? 0 }); setOpen(true); };
@@ -51,6 +70,48 @@ export default function ItemsPage() {
     setDeleteTarget(null);
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      const text = evt.target?.result as string;
+      const lines = text.trim().split(/\r?\n/).slice(1); // skip header
+      const rows: FormState[] = [];
+      const errors: string[] = [];
+      lines.forEach((line, idx) => {
+        const cols = line.split(",").map((c) => c.trim().replace(/^"|"$/g, ""));
+        if (cols.length < 5) { errors.push(`Baris ${idx + 2}: kurang kolom`); return; }
+        const [labName, name, category, initialStr, functionalStr] = cols;
+        const lab_id = labNameMap[labName.toLowerCase()];
+        if (!lab_id) { errors.push(`Baris ${idx + 2}: lab "${labName}" tidak ditemukan`); return; }
+        const initial_quantity = parseInt(initialStr);
+        const functional_quantity = parseInt(functionalStr);
+        if (isNaN(initial_quantity) || isNaN(functional_quantity)) { errors.push(`Baris ${idx + 2}: jumlah tidak valid`); return; }
+        rows.push({ lab_id, name, category, initial_quantity, functional_quantity: Math.min(functional_quantity, initial_quantity) });
+      });
+      if (errors.length > 0) {
+        setImportError(errors.slice(0, 3).join("; ") + (errors.length > 3 ? ` ... (${errors.length} error)` : ""));
+        setImportRows([]);
+      } else {
+        setImportError("");
+        setImportRows(rows);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  };
+
+  const handleImportConfirm = () => {
+    if (importRows.length === 0) return;
+    const now = Date.now();
+    setItems((prev) => [...prev, ...importRows.map((r, i) => ({ id: now + i, ...r }))]);
+    toast.success(`${importRows.length} barang berhasil diimpor`);
+    setImportOpen(false);
+    setImportRows([]);
+    setImportError("");
+  };
+
   return (
     <div className="p-6 lg:p-8">
       <div className="flex items-center justify-between mb-6">
@@ -58,7 +119,15 @@ export default function ItemsPage() {
           <h1 className="text-2xl font-bold text-gray-900">Master Barang</h1>
           <p className="text-gray-500 text-sm mt-1">Kelola inventaris aset di setiap laboratorium</p>
         </div>
-        <Button onClick={openCreate} className="bg-blue-600 hover:bg-blue-700"><Plus className="h-4 w-4 mr-2" />Tambah Barang</Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={() => setImportOpen(true)} className="gap-2">
+            <Upload className="h-4 w-4" />
+            Import CSV
+          </Button>
+          <Button onClick={openCreate} className="bg-blue-600 hover:bg-blue-700">
+            <Plus className="h-4 w-4 mr-2" />Tambah Barang
+          </Button>
+        </div>
       </div>
 
       <div className="flex items-center gap-3 mb-4">
@@ -117,6 +186,7 @@ export default function ItemsPage() {
         </CardContent>
       </Card>
 
+      {/* Add/Edit Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent aria-describedby={undefined}>
           <DialogHeader><DialogTitle>{editing ? "Edit Barang" : "Tambah Barang Baru"}</DialogTitle></DialogHeader>
@@ -182,6 +252,7 @@ export default function ItemsPage() {
         </DialogContent>
       </Dialog>
 
+      {/* Delete Dialog */}
       <Dialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
         <DialogContent aria-describedby={undefined}>
           <DialogHeader><DialogTitle>Hapus Barang</DialogTitle></DialogHeader>
@@ -189,6 +260,77 @@ export default function ItemsPage() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteTarget(null)}>Batal</Button>
             <Button variant="destructive" onClick={handleDelete}>Hapus</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Import CSV Dialog */}
+      <Dialog open={importOpen} onOpenChange={(v) => { setImportOpen(v); if (!v) { setImportRows([]); setImportError(""); } }}>
+        <DialogContent className="max-w-lg" aria-describedby={undefined}>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Upload className="h-5 w-5 text-blue-500" />
+              Import Barang via CSV
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <div className="bg-blue-50 border border-blue-100 rounded-lg p-3 text-sm text-blue-700 space-y-1">
+              <p className="font-medium">Format kolom CSV:</p>
+              <p className="font-mono text-xs">nama_lab, nama_barang, kategori, jumlah_awal, jumlah_berfungsi</p>
+              <Button variant="link" className="text-blue-600 p-0 h-auto text-xs gap-1" onClick={downloadTemplate}>
+                <Download className="h-3 w-3" />
+                Unduh template CSV
+              </Button>
+            </div>
+
+            <input ref={fileRef} type="file" accept=".csv,text/csv" className="hidden" onChange={handleFileChange} />
+            <Button variant="outline" className="w-full gap-2" onClick={() => fileRef.current?.click()}>
+              <Upload className="h-4 w-4" />
+              Pilih File CSV
+            </Button>
+
+            {importError && (
+              <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-700">
+                <p className="font-medium mb-1">Error parsing CSV:</p>
+                <p>{importError}</p>
+              </div>
+            )}
+
+            {importRows.length > 0 && (
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-gray-700">{importRows.length} barang siap diimpor:</p>
+                <div className="max-h-48 overflow-y-auto border border-gray-200 rounded-lg">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-xs">Nama</TableHead>
+                        <TableHead className="text-xs">Lab</TableHead>
+                        <TableHead className="text-xs text-center">Jml</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {importRows.map((r, i) => (
+                        <TableRow key={i}>
+                          <TableCell className="text-xs py-1.5">{r.name}</TableCell>
+                          <TableCell className="text-xs py-1.5 text-gray-500">{labMap[r.lab_id]}</TableCell>
+                          <TableCell className="text-xs py-1.5 text-center">{r.initial_quantity}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => { setImportOpen(false); setImportRows([]); setImportError(""); }}>Batal</Button>
+            <Button
+              disabled={importRows.length === 0}
+              onClick={handleImportConfirm}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              Import {importRows.length > 0 ? `(${importRows.length})` : ""}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

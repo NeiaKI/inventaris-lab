@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,12 +8,63 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Pencil, Trash2, FlaskConical } from "lucide-react";
+import { Plus, Pencil, Trash2, FlaskConical, QrCode, Download } from "lucide-react";
 import { useLabs } from "@/lib/store";
 import { toast } from "sonner";
 import type { Lab } from "@/lib/types";
+import QRCode from "qrcode";
 
 const EMPTY = { name: "", location: "" };
+
+function QRModal({ lab, onClose }: { lab: Lab; onClose: () => void }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const url = `${origin}/?lab=${encodeURIComponent(lab.name)}`;
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      QRCode.toCanvas(canvasRef.current, url, { width: 280, margin: 2 }, (err) => {
+        if (err) console.error(err);
+      });
+    }
+  }, [url]);
+
+  const handleDownload = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const a = document.createElement("a");
+    a.download = `qr-${lab.name.toLowerCase().replace(/\s+/g, "-")}.png`;
+    a.href = canvas.toDataURL("image/png");
+    a.click();
+  };
+
+  return (
+    <Dialog open onOpenChange={(open) => { if (!open) onClose(); }}>
+      <DialogContent aria-describedby={undefined}>
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <QrCode className="h-5 w-5 text-blue-500" />
+            QR Code — {lab.name}
+          </DialogTitle>
+        </DialogHeader>
+        <div className="flex flex-col items-center gap-4 py-2">
+          <div className="p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
+            <canvas ref={canvasRef} />
+          </div>
+          <p className="text-xs text-gray-400 text-center break-all max-w-xs">{url}</p>
+          <p className="text-sm text-gray-500 text-center">Scan QR ini untuk langsung menuju halaman login {lab.name}.</p>
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={onClose}>Tutup</Button>
+          <Button onClick={handleDownload} className="bg-blue-600 hover:bg-blue-700 gap-2">
+            <Download className="h-4 w-4" />
+            Unduh PNG
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export default function LabsPage() {
   const [labs, setLabs] = useLabs();
@@ -21,6 +72,7 @@ export default function LabsPage() {
   const [editing, setEditing] = useState<Lab | null>(null);
   const [form, setForm] = useState(EMPTY);
   const [deleteTarget, setDeleteTarget] = useState<Lab | null>(null);
+  const [qrLab, setQrLab] = useState<Lab | null>(null);
 
   const openCreate = () => { setEditing(null); setForm(EMPTY); setOpen(true); };
   const openEdit = (lab: Lab) => { setEditing(lab); setForm({ name: lab.name, location: lab.location }); setOpen(true); };
@@ -85,6 +137,9 @@ export default function LabsPage() {
                   <TableCell><Badge variant="secondary" className="text-xs">{lab.created_at}</Badge></TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
+                      <Button size="sm" variant="outline" onClick={() => setQrLab(lab)} title="QR Code">
+                        <QrCode className="h-3.5 w-3.5" />
+                      </Button>
                       <Button size="sm" variant="outline" onClick={() => openEdit(lab)}><Pencil className="h-3.5 w-3.5" /></Button>
                       <Button size="sm" variant="outline" className="text-red-600 border-red-200 hover:bg-red-50" onClick={() => setDeleteTarget(lab)}><Trash2 className="h-3.5 w-3.5" /></Button>
                     </div>
@@ -95,6 +150,8 @@ export default function LabsPage() {
           </Table>
         </CardContent>
       </Card>
+
+      {qrLab && <QRModal lab={qrLab} onClose={() => setQrLab(null)} />}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent aria-describedby={undefined}>
