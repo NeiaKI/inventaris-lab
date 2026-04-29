@@ -1,11 +1,13 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { FlaskConical, Package, Users, TriangleAlert, CheckCircle2, Clock, AlertCircle, AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { FlaskConical, Package, Users, TriangleAlert, CheckCircle2, Clock, AlertCircle, AlertTriangle, X, CheckCheck } from "lucide-react";
 import { useLabs, useItems, useClasses, useSessions, useAlerts, useLostReports } from "@/lib/store";
 
 function fmt(dt: string) {
@@ -17,8 +19,13 @@ export default function DashboardPage() {
   const [items] = useItems();
   const [classes] = useClasses();
   const [sessions] = useSessions();
-  const [alerts] = useAlerts();
+  const [alerts, setAlerts] = useAlerts();
   const [lostReports] = useLostReports();
+
+  const [confirmClearAll, setConfirmClearAll] = useState(false);
+
+  const resolveAlert = (id: number) => setAlerts((prev) => prev.filter((a) => a.id !== id));
+  const resolveAllAlerts = () => { setAlerts([]); setConfirmClearAll(false); };
 
   const brokenItems = useMemo(() => items.filter((i) => i.functional_quantity < i.initial_quantity), [items]);
   const activeSessions = sessions.filter((s) => s.status === "aktif");
@@ -101,24 +108,45 @@ export default function DashboardPage() {
               <AlertCircle className="h-4 w-4 text-red-500" />
               Peringatan Terbaru
               {alerts.length > 0 && <Badge variant="destructive" className="ml-1">{alerts.length}</Badge>}
+              {alerts.length > 0 && (
+                <button
+                  onClick={() => setConfirmClearAll(true)}
+                  className="ml-auto flex items-center gap-1 text-xs text-gray-400 hover:text-green-600 transition-colors"
+                  title="Selesaikan semua"
+                >
+                  <CheckCheck className="h-3.5 w-3.5" />
+                  Selesaikan Semua
+                </button>
+              )}
             </CardTitle>
           </CardHeader>
           <CardContent>
             {alerts.length === 0 ? (
               <div className="flex items-center gap-2 text-gray-500 text-sm py-4">
                 <CheckCircle2 className="h-4 w-4 text-green-500" />
-                Tidak ada peringatan aktif.
+                Semua peringatan telah diselesaikan.
               </div>
             ) : (
-              <div className="space-y-3 max-h-64 overflow-y-auto">
+              <div className="space-y-2 max-h-64 overflow-y-auto">
                 {alerts.map((a) => (
-                  <Alert key={a.id} variant="destructive" className="py-3">
+                  <Alert key={a.id} variant="destructive" className="py-2.5 pr-2">
                     <TriangleAlert className="h-4 w-4" />
-                    <AlertTitle className="text-xs font-semibold uppercase tracking-wide">
-                      {a.type === "selisih" ? "Selisih Barang" : "Barang Rusak"} · <span className="normal-case font-normal">{itemMap[a.lab_item_id]}</span>
-                    </AlertTitle>
-                    <AlertDescription className="text-xs mt-0.5">{a.message}</AlertDescription>
-                    <p className="text-xs text-red-400 mt-1">{fmt(a.created_at)}</p>
+                    <div className="flex items-start justify-between gap-2 w-full">
+                      <div className="flex-1 min-w-0">
+                        <AlertTitle className="text-xs font-semibold uppercase tracking-wide">
+                          {a.type === "selisih" ? "Selisih Barang" : "Barang Rusak"} · <span className="normal-case font-normal">{itemMap[a.lab_item_id]}</span>
+                        </AlertTitle>
+                        <AlertDescription className="text-xs mt-0.5">{a.message}</AlertDescription>
+                        <p className="text-xs text-red-400 mt-1">{fmt(a.created_at)}</p>
+                      </div>
+                      <button
+                        onClick={() => resolveAlert(a.id)}
+                        className="p-1 rounded hover:bg-red-200 text-red-400 hover:text-red-700 transition-colors shrink-0 mt-0.5"
+                        title="Selesaikan"
+                      >
+                        <X className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
                   </Alert>
                 ))}
               </div>
@@ -168,6 +196,25 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      <Dialog open={confirmClearAll} onOpenChange={setConfirmClearAll}>
+        <DialogContent aria-describedby={undefined}>
+          <DialogHeader>
+            <DialogTitle>Selesaikan Semua Peringatan?</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-gray-600">
+            Sebanyak <strong>{alerts.length} peringatan</strong> akan ditandai selesai dan dihapus dari daftar.
+            Tindakan ini tidak memulihkan jumlah barang secara otomatis.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmClearAll(false)}>Batal</Button>
+            <Button className="bg-green-600 hover:bg-green-700" onClick={resolveAllAlerts}>
+              <CheckCheck className="h-4 w-4 mr-1.5" />
+              Ya, Selesaikan Semua
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
