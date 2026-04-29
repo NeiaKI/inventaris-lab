@@ -1,28 +1,19 @@
 "use client";
 
-import type { AuthUser, ClassAccount } from "./types";
-import { ADMIN_CREDENTIALS } from "./mock-data";
+import type { AuthUser } from "./types";
 
-const ADMIN_PWD_KEY = "inv_admin_password";
-
-export function getAdminPassword(): string {
-  if (typeof window === "undefined") return ADMIN_CREDENTIALS.password;
-  try { return localStorage.getItem(ADMIN_PWD_KEY) || ADMIN_CREDENTIALS.password; } catch { return ADMIN_CREDENTIALS.password; }
-}
-
-export function setAdminPassword(pwd: string) {
-  localStorage.setItem(ADMIN_PWD_KEY, pwd);
-}
-
-export function login(selected: string, password: string, classes: ClassAccount[]): AuthUser | null {
-  if (selected === "admin") {
-    return password === getAdminPassword() ? { id: 0, name: "Admin", role: "admin" } : null;
+export async function loginAsync(selected: string, password: string): Promise<AuthUser | null> {
+  try {
+    const res = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ selected, password }),
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
   }
-  const kelas = classes.find((c) => c.username === selected);
-  if (kelas && kelas.password === password) {
-    return { id: kelas.id, name: kelas.name, role: "kelas" };
-  }
-  return null;
 }
 
 export function getSession(): AuthUser | null {

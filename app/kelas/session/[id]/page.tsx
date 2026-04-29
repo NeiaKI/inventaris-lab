@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FlaskConical, MapPin, Clock, ClipboardCheck, Package, AlertTriangle, MessageCircle } from "lucide-react";
+import { FlaskConical, MapPin, Clock, ClipboardCheck, Package, AlertTriangle, MessageCircle, Loader2 } from "lucide-react";
 import { useSessions, useLabs, useItems, useLostReports } from "@/lib/store";
 import { getSession } from "@/lib/auth";
 import { ADMIN_WA_NUMBER } from "@/lib/mock-data";
@@ -27,7 +27,7 @@ function elapsed(from: string) {
 export default function ActiveSessionPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const [sessions] = useSessions();
+  const [sessions, setSessions] = useSessions();
   const [labs] = useLabs();
   const [items] = useItems();
   const [lostReports, setLostReports] = useLostReports();
@@ -43,11 +43,21 @@ export default function ActiveSessionPage() {
   const lab = useMemo(() => labs.find((l) => l.id === session?.lab_id), [labs, session]);
   const labItems = useMemo(() => items.filter((i) => i.lab_id === session?.lab_id), [items, session]);
 
+  // Auto-expire: if session has been active > 24h, close it
+  useEffect(() => {
+    if (!session || session.status !== "aktif") return;
+    const ageMs = Date.now() - new Date(session.started_at).getTime();
+    if (ageMs > 24 * 60 * 60 * 1000) {
+      setSessions((prev) =>
+        prev.map((s) => s.id === sessionId ? { ...s, status: "pending", ended_at: new Date().toISOString() } : s)
+      );
+    }
+  }, [session, sessionId, setSessions]);
+
   if (!session) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-gray-400">
-        <p>Sesi tidak ditemukan.</p>
-        <Button className="mt-4" onClick={() => router.push("/kelas/labs")}>Kembali</Button>
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-gray-300" />
       </div>
     );
   }

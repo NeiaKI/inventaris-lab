@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ClipboardCheck, TriangleAlert } from "lucide-react";
+import { ClipboardCheck, TriangleAlert, Loader2 } from "lucide-react";
 import { useSessions, useLabs, useItems, useAlerts, useSessionItemStatuses } from "@/lib/store";
 import { getSession } from "@/lib/auth";
 import type { ItemCondition, SessionItemStatus, Alert } from "@/lib/types";
@@ -29,17 +29,52 @@ export default function CheckoutPage() {
   const lab = useMemo(() => labs.find((l) => l.id === session?.lab_id), [labs, session]);
   const labItems = useMemo(() => items.filter((i) => i.lab_id === session?.lab_id), [items, session]);
 
-  const [checklist, setChecklist] = useState<ChecklistRow[]>(() =>
-    labItems.map((item) => ({ lab_item_id: item.id, name: item.name, initial_quantity: item.functional_quantity, counted_quantity: item.functional_quantity, condition: "baik" as ItemCondition }))
-  );
+  const [checklist, setChecklist] = useState<ChecklistRow[]>([]);
+  const checklistInitRef = useRef(false);
+
+  useEffect(() => {
+    if (labItems.length > 0 && !checklistInitRef.current) {
+      checklistInitRef.current = true;
+      setChecklist(
+        labItems.map((item) => ({
+          lab_item_id: item.id,
+          name: item.name,
+          initial_quantity: item.functional_quantity,
+          counted_quantity: item.functional_quantity,
+          condition: "baik" as ItemCondition,
+        }))
+      );
+    }
+  }, [labItems]);
+
   const [submitting, setSubmitting] = useState(false);
+
+  // Auto-expire: if session has been active > 24h, close it
+  useEffect(() => {
+    if (!session || session.status !== "aktif") return;
+    const ageMs = Date.now() - new Date(session.started_at).getTime();
+    if (ageMs > 24 * 60 * 60 * 1000) {
+      setSessions((prev) =>
+        prev.map((s) => s.id === sessionId ? { ...s, status: "pending", ended_at: new Date().toISOString() } : s)
+      );
+    }
+  }, [session, sessionId, setSessions]);
 
   const updateRow = (idx: number, field: keyof ChecklistRow, value: string | number) => {
     setChecklist((prev) => { const next = [...prev]; next[idx] = { ...next[idx], [field]: value }; return next; });
   };
 
-  if (!session || session.status !== "aktif") {
-    const isForceEnded = session?.status === "pending";
+  // Show spinner while Supabase is still loading
+  if (!session) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-gray-300" />
+      </div>
+    );
+  }
+
+  if (session.status !== "aktif") {
+    const isForceEnded = session.status === "pending";
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-6">
         <div className={`p-4 rounded-full mb-4 ${isForceEnded ? "bg-yellow-100" : "bg-gray-100"}`}>
@@ -53,7 +88,8 @@ export default function CheckoutPage() {
         <p className="text-sm text-gray-400 mt-1">
           {isForceEnded
             ? "Admin telah menutup sesi ini. Hubungi guru jika ada pertanyaan."
-            : "Sesi ini sudah tidak aktif."}
+            : "Sesi ini sudah tidak aktif."
+          }
         </p>
         <Button className="mt-5" onClick={() => router.push("/kelas/labs")}>Kembali ke Lab</Button>
       </div>

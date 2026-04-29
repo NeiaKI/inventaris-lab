@@ -6,14 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { KeyRound, RotateCcw, Eye, EyeOff, ShieldAlert } from "lucide-react";
-import { getAdminPassword, setAdminPassword } from "@/lib/auth";
+import { KeyRound, RotateCcw, Eye, EyeOff, ShieldAlert, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-
-const STORAGE_KEYS = [
-  "inv_labs", "inv_items", "inv_classes", "inv_sessions",
-  "inv_alerts", "inv_session_statuses", "inv_lost_reports",
-];
 
 export default function SettingsPage() {
   const [currentPwd, setCurrentPwd] = useState("");
@@ -21,28 +15,30 @@ export default function SettingsPage() {
   const [confirmPwd, setConfirmPwd] = useState("");
   const [showPwd, setShowPwd] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
+  const [savingPwd, setSavingPwd] = useState(false);
+  const [resetting, setResetting] = useState(false);
 
-  function handleChangePassword() {
-    if (currentPwd !== getAdminPassword()) {
-      toast.error("Password saat ini salah.");
-      return;
-    }
-    if (newPwd.length < 4) {
-      toast.error("Password baru minimal 4 karakter.");
-      return;
-    }
-    if (newPwd !== confirmPwd) {
-      toast.error("Konfirmasi password tidak cocok.");
-      return;
-    }
-    setAdminPassword(newPwd);
+  async function handleChangePassword() {
+    if (newPwd.length < 4) { toast.error("Password baru minimal 4 karakter."); return; }
+    if (newPwd !== confirmPwd) { toast.error("Konfirmasi password tidak cocok."); return; }
+    setSavingPwd(true);
+    const res = await fetch("/api/auth/change-password", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ currentPassword: currentPwd, newPassword: newPwd }),
+    });
+    setSavingPwd(false);
+    if (!res.ok) { toast.error("Password saat ini salah."); return; }
     setCurrentPwd(""); setNewPwd(""); setConfirmPwd("");
     toast.success("Password berhasil diubah.");
   }
 
-  function handleResetData() {
-    STORAGE_KEYS.forEach((k) => localStorage.removeItem(k));
+  async function handleResetData() {
+    setResetting(true);
+    const res = await fetch("/api/reset", { method: "POST" });
+    setResetting(false);
     setResetOpen(false);
+    if (!res.ok) { toast.error("Gagal mereset data."); return; }
     toast.success("Data berhasil direset ke awal.", { description: "Halaman akan dimuat ulang..." });
     setTimeout(() => window.location.reload(), 1200);
   }
@@ -54,7 +50,6 @@ export default function SettingsPage() {
         <p className="text-gray-500 text-sm mt-1">Kelola keamanan akun dan data sistem</p>
       </div>
 
-      {/* Ganti Password */}
       <Card className="mb-6">
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
@@ -100,16 +95,15 @@ export default function SettingsPage() {
           </div>
           <Button
             className="w-full bg-blue-600 hover:bg-blue-700"
-            disabled={!currentPwd || !newPwd || !confirmPwd}
+            disabled={!currentPwd || !newPwd || !confirmPwd || savingPwd}
             onClick={handleChangePassword}
           >
-            <KeyRound className="h-4 w-4 mr-2" />
+            {savingPwd ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <KeyRound className="h-4 w-4 mr-2" />}
             Simpan Password Baru
           </Button>
         </CardContent>
       </Card>
 
-      {/* Reset Data */}
       <Card className="border-red-200">
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2 text-red-600">
@@ -146,8 +140,9 @@ export default function SettingsPage() {
             </div>
             <div className="flex gap-3">
               <Button variant="outline" className="flex-1" onClick={() => setResetOpen(false)}>Batal</Button>
-              <Button className="flex-1 bg-red-600 hover:bg-red-700" onClick={handleResetData}>
-                <RotateCcw className="h-4 w-4 mr-2" />Ya, Reset Sekarang
+              <Button className="flex-1 bg-red-600 hover:bg-red-700" disabled={resetting} onClick={handleResetData}>
+                {resetting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <RotateCcw className="h-4 w-4 mr-2" />}
+                Ya, Reset Sekarang
               </Button>
             </div>
           </div>
