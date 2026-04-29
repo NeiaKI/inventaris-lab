@@ -141,11 +141,37 @@ export default function ItemsPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="item-initial">Jumlah Awal</Label>
-                <Input id="item-initial" type="number" min={0} value={form.initial_quantity} onChange={(e) => setForm((p) => ({ ...p, initial_quantity: Number(e.target.value) }))} />
+                <Input
+                  id="item-initial"
+                  type="number"
+                  min={0}
+                  value={form.initial_quantity}
+                  onChange={(e) => {
+                    const initial = Math.max(0, Number(e.target.value));
+                    setForm((p) => ({
+                      ...p,
+                      initial_quantity: initial,
+                      functional_quantity: Math.min(p.functional_quantity, initial),
+                    }));
+                  }}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="item-functional">Jumlah Berfungsi</Label>
-                <Input id="item-functional" type="number" min={0} value={form.functional_quantity} onChange={(e) => setForm((p) => ({ ...p, functional_quantity: Number(e.target.value) }))} />
+                <Input
+                  id="item-functional"
+                  type="number"
+                  min={0}
+                  max={form.initial_quantity}
+                  value={form.functional_quantity}
+                  onChange={(e) => {
+                    const val = Math.min(Math.max(0, Number(e.target.value)), form.initial_quantity);
+                    setForm((p) => ({ ...p, functional_quantity: val }));
+                  }}
+                />
+                {form.functional_quantity > form.initial_quantity && (
+                  <p className="text-xs text-red-500">Tidak boleh melebihi jumlah awal ({form.initial_quantity})</p>
+                )}
               </div>
             </div>
           </div>
