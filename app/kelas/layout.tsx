@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getSession, clearSession } from "@/lib/auth";
-import { FlaskConical, LogOut } from "lucide-react";
+import { FlaskConical, LogOut, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { AuthUser } from "@/lib/types";
 
@@ -27,8 +27,13 @@ export default function KelasLayout({ children }: { children: React.ReactNode })
           <div className="bg-blue-600 text-white p-1.5 rounded-lg"><FlaskConical className="h-4 w-4" /></div>
           <span className="font-semibold text-gray-800">Inventaris Lab</span>
         </Link>
-        <div className="flex items-center gap-3">
-          {user && <span className="text-sm text-gray-600">👤 <strong>{user.name}</strong></span>}
+        <div className="flex items-center gap-2">
+          {user && <span className="text-sm text-gray-600 hidden sm:inline">👤 <strong>{user.name}</strong></span>}
+          <Link href="/kelas/history">
+            <Button size="sm" variant="ghost" className="text-gray-500 hover:text-gray-800">
+              <History className="h-3.5 w-3.5 mr-1.5" />Riwayat
+            </Button>
+          </Link>
           <Button size="sm" variant="outline" onClick={handleLogout}>
             <LogOut className="h-3.5 w-3.5 mr-1.5" />Keluar
           </Button>

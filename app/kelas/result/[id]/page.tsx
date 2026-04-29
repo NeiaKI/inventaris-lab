@@ -45,23 +45,40 @@ export default function ResultPage() {
   }
 
   const isAman = session.status === "aman";
+  const isPending = session.status === "pending";
+
+  const cardStyle = isPending
+    ? "bg-yellow-50 border-2 border-yellow-200"
+    : isAman ? "bg-green-50 border-2 border-green-200" : "bg-red-50 border-2 border-red-200";
+  const iconBg = isPending ? "bg-yellow-100" : isAman ? "bg-green-100" : "bg-red-100";
+  const badgeStyle = isPending ? "bg-yellow-500 text-white" : isAman ? "bg-green-600 text-white" : "bg-red-600 text-white";
+  const titleStyle = isPending ? "text-yellow-800" : isAman ? "text-green-800" : "text-red-800";
+  const descStyle = isPending ? "text-yellow-700" : isAman ? "text-green-700" : "text-red-700";
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-6">
-      <div className={`w-full max-w-md rounded-2xl p-8 text-center shadow-xl ${isAman ? "bg-green-50 border-2 border-green-200" : "bg-red-50 border-2 border-red-200"}`}>
-        <div className={`mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full ${isAman ? "bg-green-100" : "bg-red-100"}`}>
-          {isAman ? <CheckCircle2 className="h-10 w-10 text-green-600" /> : <TriangleAlert className="h-10 w-10 text-red-600" />}
+      <div className={`w-full max-w-md rounded-2xl p-8 text-center shadow-xl ${cardStyle}`}>
+        <div className={`mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full ${iconBg}`}>
+          {isPending
+            ? <span className="text-4xl">🔒</span>
+            : isAman
+              ? <CheckCircle2 className="h-10 w-10 text-green-600" />
+              : <TriangleAlert className="h-10 w-10 text-red-600" />}
         </div>
 
-        <Badge className={`mb-2 text-sm px-4 py-1 ${isAman ? "bg-green-600 text-white" : "bg-red-600 text-white"}`}>
-          {isAman ? "Status Lab Aman" : "Ada Selisih / Kerusakan"}
+        <Badge className={`mb-2 text-sm px-4 py-1 ${badgeStyle}`}>
+          {isPending ? "Sesi Diakhiri Admin" : isAman ? "Status Lab Aman" : "Ada Selisih / Kerusakan"}
         </Badge>
 
-        <h2 className={`text-xl font-bold mt-2 ${isAman ? "text-green-800" : "text-red-800"}`}>
-          {isAman ? "Semua barang sesuai!" : "Terdapat ketidaksesuaian barang"}
+        <h2 className={`text-xl font-bold mt-2 ${titleStyle}`}>
+          {isPending ? "Sesi diakhiri oleh Admin" : isAman ? "Semua barang sesuai!" : "Terdapat ketidaksesuaian barang"}
         </h2>
-        <p className={`text-sm mt-2 ${isAman ? "text-green-700" : "text-red-700"}`}>
-          {isAman ? "Terima kasih telah menjaga kondisi lab dengan baik." : "Laporan peringatan telah dikirim ke Admin untuk ditindaklanjuti."}
+        <p className={`text-sm mt-2 ${descStyle}`}>
+          {isPending
+            ? "Guru/Admin telah menutup sesi ini. Hubungi guru jika ada pertanyaan."
+            : isAman
+              ? "Terima kasih telah menjaga kondisi lab dengan baik."
+              : "Laporan peringatan telah dikirim ke Admin untuk ditindaklanjuti."}
         </p>
 
         <div className="mt-6 space-y-2 text-left">
@@ -91,7 +108,7 @@ export default function ResultPage() {
           </div>
         )}
 
-        <Button className={`mt-7 w-full h-11 ${isAman ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"}`} onClick={() => router.push("/kelas/labs")}>
+        <Button className={`mt-7 w-full h-11 ${isPending ? "bg-yellow-600 hover:bg-yellow-700" : isAman ? "bg-green-600 hover:bg-green-700" : "bg-red-600 hover:bg-red-700"}`} onClick={() => router.push("/kelas/labs")}>
           Selesai
         </Button>
       </div>
