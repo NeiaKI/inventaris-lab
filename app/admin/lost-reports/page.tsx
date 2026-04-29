@@ -1,12 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertTriangle, MessageCircle } from "lucide-react";
+import { AlertTriangle, MessageCircle, Filter } from "lucide-react";
 import { useLostReports, useItems, useLabs, useClasses, useSessions } from "@/lib/store";
 import { ADMIN_WA_NUMBER } from "@/lib/mock-data";
 import type { LostReportStatus, LostItemReport } from "@/lib/types";
@@ -37,6 +37,7 @@ export default function LostReportsPage() {
   const [labs] = useLabs();
   const [classes] = useClasses();
   const [sessions] = useSessions();
+  const [filterStatus, setFilterStatus] = useState<LostReportStatus | "semua">("semua");
 
   const enriched = useMemo(() => reports.map((r) => {
     const item = items.find((i) => i.id === r.lab_item_id);
@@ -47,6 +48,10 @@ export default function LostReportsPage() {
   }), [reports, items, labs, classes, sessions]);
 
   const newCount = reports.filter((r) => r.status === "baru").length;
+  const displayed = useMemo(
+    () => (filterStatus === "semua" ? enriched : enriched.filter((r) => r.status === filterStatus)).slice().reverse(),
+    [enriched, filterStatus]
+  );
 
   function updateStatus(id: number, status: LostReportStatus) {
     setReports((prev) => prev.map((r) => r.id === id ? { ...r, status } : r));
@@ -80,9 +85,23 @@ export default function LostReportsPage() {
           </h1>
           <p className="text-sm text-gray-500 mt-0.5">Laporan barang hilang yang dikirim oleh siswa</p>
         </div>
+        <div className="flex items-center gap-2">
+          <Filter className="h-4 w-4 text-gray-400" />
+          <Select value={filterStatus} onValueChange={(v) => setFilterStatus(v as LostReportStatus | "semua")}>
+            <SelectTrigger className="w-36 h-9 text-sm">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="semua">Semua</SelectItem>
+              <SelectItem value="baru">Baru</SelectItem>
+              <SelectItem value="diproses">Diproses</SelectItem>
+              <SelectItem value="selesai">Selesai</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
-      {enriched.length === 0 ? (
+      {displayed.length === 0 ? (
         <Card>
           <CardContent className="py-16 text-center text-gray-400">
             <AlertTriangle className="h-10 w-10 mx-auto mb-3 opacity-30" />
@@ -92,7 +111,7 @@ export default function LostReportsPage() {
       ) : (
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm text-gray-600">{enriched.length} laporan ditemukan</CardTitle>
+            <CardTitle className="text-sm text-gray-600">{displayed.length} laporan ditemukan</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
             <Table>
@@ -108,7 +127,7 @@ export default function LostReportsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {enriched.slice().reverse().map((r) => (
+                {displayed.map((r) => (
                   <TableRow key={r.id} className={r.status === "baru" ? "bg-red-50" : ""}>
                     <TableCell className="text-xs text-gray-500 whitespace-nowrap">{formatDate(r.created_at)}</TableCell>
                     <TableCell className="font-medium text-sm">{r.kelasName}</TableCell>

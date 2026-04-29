@@ -4,11 +4,16 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { clearSession } from "@/lib/auth";
-import { LayoutDashboard, FlaskConical, Package, Users, ClipboardList, LogOut, AlertTriangle } from "lucide-react";
+import { LayoutDashboard, FlaskConical, Package, Users, ClipboardList, LogOut, AlertTriangle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLostReports } from "@/lib/store";
 
-export function AdminSidebar() {
+interface AdminSidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [lostReports] = useLostReports();
@@ -26,15 +31,31 @@ export function AdminSidebar() {
   ];
 
   return (
-    <aside className="flex flex-col w-64 min-h-screen bg-gray-900 text-white">
-      <div className="flex items-center gap-3 px-6 py-5 border-b border-gray-700">
-        <div className="bg-blue-500 p-1.5 rounded-lg">
-          <FlaskConical className="h-5 w-5" />
+    <aside
+      className={cn(
+        // Mobile: fixed overlay sidebar with slide transition
+        "fixed top-0 left-0 h-full z-40 transition-transform duration-300 ease-in-out",
+        "lg:static lg:translate-x-0 lg:transition-none lg:z-auto",
+        isOpen ? "translate-x-0" : "-translate-x-full",
+        "flex flex-col w-64 min-h-screen bg-gray-900 text-white"
+      )}
+    >
+      <div className="flex items-center justify-between px-6 py-5 border-b border-gray-700">
+        <div className="flex items-center gap-3">
+          <div className="bg-blue-500 p-1.5 rounded-lg">
+            <FlaskConical className="h-5 w-5" />
+          </div>
+          <div className="leading-tight">
+            <p className="font-semibold text-sm">Inventaris Lab</p>
+            <p className="text-xs text-gray-400">SMK Bintang Nusantara</p>
+          </div>
         </div>
-        <div className="leading-tight">
-          <p className="font-semibold text-sm">Inventaris Lab</p>
-          <p className="text-xs text-gray-400">SMK Bintang Nusantara</p>
-        </div>
+        {/* Close button — mobile only */}
+        {onClose && (
+          <button onClick={onClose} className="lg:hidden p-1 rounded hover:bg-gray-700 text-gray-400" aria-label="Tutup menu">
+            <X className="h-4 w-4" />
+          </button>
+        )}
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1">

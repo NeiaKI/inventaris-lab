@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Pencil, Trash2, FlaskConical } from "lucide-react";
 import { useLabs } from "@/lib/store";
+import { toast } from "sonner";
 import type { Lab } from "@/lib/types";
 
 const EMPTY = { name: "", location: "" };
@@ -28,8 +29,10 @@ export default function LabsPage() {
     if (!form.name.trim()) return;
     if (editing) {
       setLabs((prev) => prev.map((l) => l.id === editing.id ? { ...l, ...form } : l));
+      toast.success("Lab diperbarui", { description: `${form.name} berhasil disimpan.` });
     } else {
       setLabs((prev) => [...prev, { id: Date.now(), ...form, created_at: new Date().toISOString().slice(0, 10) }]);
+      toast.success("Lab ditambahkan", { description: `${form.name} berhasil ditambahkan.` });
     }
     setOpen(false);
   };
@@ -37,11 +40,12 @@ export default function LabsPage() {
   const handleDelete = () => {
     if (!deleteTarget) return;
     setLabs((prev) => prev.filter((l) => l.id !== deleteTarget.id));
+    toast.success("Lab dihapus", { description: `${deleteTarget.name} telah dihapus.` });
     setDeleteTarget(null);
   };
 
   return (
-    <div className="p-8">
+    <div className="p-6 lg:p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Laboratorium</h1>

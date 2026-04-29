@@ -39,10 +39,23 @@ export default function CheckoutPage() {
   };
 
   if (!session || session.status !== "aktif") {
+    const isForceEnded = session?.status === "pending";
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-gray-400">
-        <p>Sesi tidak valid.</p>
-        <Button className="mt-4" onClick={() => router.push("/kelas/labs")}>Kembali</Button>
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-6">
+        <div className={`p-4 rounded-full mb-4 ${isForceEnded ? "bg-yellow-100" : "bg-gray-100"}`}>
+          {isForceEnded
+            ? <span className="text-3xl">🔒</span>
+            : <span className="text-3xl">✅</span>}
+        </div>
+        <p className="font-semibold text-gray-700">
+          {isForceEnded ? "Sesi diakhiri oleh Admin" : "Sesi sudah selesai"}
+        </p>
+        <p className="text-sm text-gray-400 mt-1">
+          {isForceEnded
+            ? "Admin telah menutup sesi ini. Hubungi guru jika ada pertanyaan."
+            : "Sesi ini sudah tidak aktif."}
+        </p>
+        <Button className="mt-5" onClick={() => router.push("/kelas/labs")}>Kembali ke Lab</Button>
       </div>
     );
   }

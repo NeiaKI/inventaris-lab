@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Pencil, Trash2, KeyRound, Eye, EyeOff } from "lucide-react";
 import { useClasses } from "@/lib/store";
+import { toast } from "sonner";
 import type { ClassAccount } from "@/lib/types";
 
 type FormState = Omit<ClassAccount, "id">;
@@ -32,8 +33,10 @@ export default function ClassesPage() {
     if (!form.name.trim() || !form.username.trim() || !form.password.trim()) return;
     if (editing) {
       setClasses((prev) => prev.map((c) => c.id === editing.id ? { ...c, ...form } : c));
+      toast.success("Akun diperbarui", { description: `${form.name} berhasil disimpan.` });
     } else {
       setClasses((prev) => [...prev, { id: Date.now(), ...form }]);
+      toast.success("Akun ditambahkan", { description: `${form.name} berhasil ditambahkan.` });
     }
     setOpen(false);
   };
@@ -41,17 +44,19 @@ export default function ClassesPage() {
   const handleReset = () => {
     if (!newPassword.trim() || !editing) return;
     setClasses((prev) => prev.map((c) => c.id === editing.id ? { ...c, password: newPassword } : c));
+    toast.success("Password direset", { description: `Password ${editing.name} berhasil diperbarui.` });
     setResetOpen(false);
   };
 
   const handleDelete = () => {
     if (!deleteTarget) return;
     setClasses((prev) => prev.filter((c) => c.id !== deleteTarget.id));
+    toast.success("Akun dihapus", { description: `${deleteTarget.name} telah dihapus.` });
     setDeleteTarget(null);
   };
 
   return (
-    <div className="p-8">
+    <div className="p-6 lg:p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Akun Kelas</h1>

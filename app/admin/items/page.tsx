@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Pencil, Trash2, TriangleAlert } from "lucide-react";
 import { useItems, useLabs } from "@/lib/store";
+import { toast } from "sonner";
 import type { LabItem } from "@/lib/types";
 
 type FormState = Omit<LabItem, "id">;
@@ -35,8 +36,10 @@ export default function ItemsPage() {
     if (!form.name.trim() || !form.lab_id) return;
     if (editing) {
       setItems((prev) => prev.map((i) => i.id === editing.id ? { ...i, ...form } : i));
+      toast.success("Barang diperbarui", { description: `${form.name} berhasil disimpan.` });
     } else {
       setItems((prev) => [...prev, { id: Date.now(), ...form }]);
+      toast.success("Barang ditambahkan", { description: `${form.name} berhasil ditambahkan.` });
     }
     setOpen(false);
   };
@@ -44,11 +47,12 @@ export default function ItemsPage() {
   const handleDelete = () => {
     if (!deleteTarget) return;
     setItems((prev) => prev.filter((i) => i.id !== deleteTarget.id));
+    toast.success("Barang dihapus", { description: `${deleteTarget.name} telah dihapus.` });
     setDeleteTarget(null);
   };
 
   return (
-    <div className="p-8">
+    <div className="p-6 lg:p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Master Barang</h1>
