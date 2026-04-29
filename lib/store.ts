@@ -49,7 +49,7 @@ function useSupabaseTable<T extends { id: number }>(tableName: string, initial: 
           toast.error("Gagal memuat data", { description: "Periksa koneksi internet Anda." });
           return;
         }
-        if (data && data.length > 0) {
+        if (data !== null) {
           setValue(data as T[]);
           valueRef.current = data as T[];
         }

@@ -3,6 +3,8 @@ import { test, expect, type Page } from "@playwright/test";
 async function loginAdmin(page: Page) {
   await page.context().clearCookies();
   await page.goto("/admin");
+  await page.evaluate(() => localStorage.removeItem("inv_user"));
+  await page.reload();
   await page.getByLabel("Username").fill("admin");
   await page.getByLabel("Password").fill("admin123");
   await page.getByRole("button", { name: "Masuk sebagai Admin" }).click();

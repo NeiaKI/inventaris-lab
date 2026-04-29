@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 async function loginKelas(page: import("@playwright/test").Page, namaKelas = "X RPL 1") {
   await page.context().clearCookies();
   await page.goto("/");
-  await page.evaluate(() => sessionStorage.clear());
+  await page.evaluate(() => { sessionStorage.clear(); localStorage.removeItem("inv_user"); });
   // Wait for Supabase to load class list
   await expect(page.getByRole("combobox")).toBeEnabled({ timeout: 8000 });
   await page.getByRole("combobox").click();
@@ -27,8 +27,8 @@ test("halaman labs menampilkan daftar lab", async ({ page }) => {
   await loginKelas(page);
   await expect(page.getByText("Pilih Laboratorium")).toBeVisible({ timeout: 10000 });
   await expect(page.getByText("Lab Komputer 1")).toBeVisible({ timeout: 10000 });
-  await expect(page.getByText("Lab RPL")).toBeVisible();
-  await expect(page.getByText("Lab Jaringan")).toBeVisible();
+  await expect(page.getByText("Lab RPL")).toBeVisible({ timeout: 10000 });
+  await expect(page.getByText("Lab Jaringan")).toBeVisible({ timeout: 10000 });
 });
 
 test("alur lengkap sesi: mulai → aktif → checkout → result aman", async ({ page }) => {
