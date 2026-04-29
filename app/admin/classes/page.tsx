@@ -98,12 +98,12 @@ export default function ClassesPage() {
         <DialogContent aria-describedby={undefined}>
           <DialogHeader><DialogTitle>{editing ? "Edit Akun Kelas" : "Tambah Akun Kelas Baru"}</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
-            <div className="space-y-2"><Label>Nama Kelas</Label><Input value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} placeholder="cth. X RPL 1" /></div>
-            <div className="space-y-2"><Label>Username</Label><Input value={form.username} onChange={(e) => setForm((p) => ({ ...p, username: e.target.value }))} placeholder="cth. x-rpl-1" /></div>
+            <div className="space-y-2"><Label htmlFor="class-name">Nama Kelas</Label><Input id="class-name" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} placeholder="cth. X RPL 1" /></div>
+            <div className="space-y-2"><Label htmlFor="class-username">Username</Label><Input id="class-username" value={form.username} onChange={(e) => setForm((p) => ({ ...p, username: e.target.value }))} placeholder="cth. x-rpl-1" /></div>
             <div className="space-y-2">
-              <Label>Password</Label>
+              <Label htmlFor="class-password">Password</Label>
               <div className="relative">
-                <Input type={showPass ? "text" : "password"} value={form.password} onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))} placeholder="Masukkan password" />
+                <Input id="class-password" type={showPass ? "text" : "password"} value={form.password} onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))} placeholder="Masukkan password" />
                 <button type="button" className="absolute right-2 top-2.5 text-gray-400 hover:text-gray-600" onClick={() => setShowPass(!showPass)}>
                   {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -121,8 +121,8 @@ export default function ClassesPage() {
         <DialogContent aria-describedby={undefined}>
           <DialogHeader><DialogTitle>Reset Password — {editing?.name}</DialogTitle></DialogHeader>
           <div className="space-y-2 py-2">
-            <Label>Password Baru</Label>
-            <Input type="text" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Masukkan password baru" />
+            <Label htmlFor="new-password">Password Baru</Label>
+            <Input id="new-password" type="text" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Masukkan password baru" />
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setResetOpen(false)}>Batal</Button>

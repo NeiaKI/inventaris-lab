@@ -1,18 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { Lab, LabItem, ClassAccount, Session, Alert, SessionItemStatus } from "./types";
 import { MOCK_LABS, MOCK_ITEMS, MOCK_CLASSES, MOCK_SESSIONS, MOCK_ALERTS } from "./mock-data";
 
 function useLocalStorage<T>(key: string, initial: T) {
-  const [value, setValue] = useState<T>(initial);
-
-  useEffect(() => {
+  const [value, setValue] = useState<T>(() => {
+    if (typeof window === "undefined") return initial;
     try {
       const stored = localStorage.getItem(key);
-      if (stored) setValue(JSON.parse(stored));
+      if (stored) return JSON.parse(stored) as T;
     } catch {}
-  }, [key]);
+    return initial;
+  });
 
   const set = (next: T | ((prev: T) => T)) => {
     setValue((prev) => {

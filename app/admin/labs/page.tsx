@@ -97,12 +97,12 @@ export default function LabsPage() {
           <DialogHeader><DialogTitle>{editing ? "Edit Lab" : "Tambah Lab Baru"}</DialogTitle></DialogHeader>
           <div className="space-y-4 py-2">
             <div className="space-y-2">
-              <Label>Nama Lab</Label>
-              <Input placeholder="cth. Lab Komputer 1" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} />
+              <Label htmlFor="lab-name">Nama Lab</Label>
+              <Input id="lab-name" placeholder="cth. Lab Komputer 1" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} />
             </div>
             <div className="space-y-2">
-              <Label>Lokasi</Label>
-              <Input placeholder="cth. Gedung A, Lantai 2" value={form.location} onChange={(e) => setForm((p) => ({ ...p, location: e.target.value }))} />
+              <Label htmlFor="lab-location">Lokasi</Label>
+              <Input id="lab-location" placeholder="cth. Gedung A, Lantai 2" value={form.location} onChange={(e) => setForm((p) => ({ ...p, location: e.target.value }))} />
             </div>
           </div>
           <DialogFooter>

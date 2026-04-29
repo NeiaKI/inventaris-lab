@@ -31,7 +31,7 @@ export default function CheckoutPage() {
   const labItems = useMemo(() => items.filter((i) => i.lab_id === session?.lab_id), [items, session]);
 
   const [checklist, setChecklist] = useState<ChecklistRow[]>(() =>
-    labItems.map((item) => ({ lab_item_id: item.id, name: item.name, initial_quantity: item.initial_quantity, counted_quantity: item.functional_quantity, condition: "baik" as ItemCondition }))
+    labItems.map((item) => ({ lab_item_id: item.id, name: item.name, initial_quantity: item.functional_quantity, counted_quantity: item.functional_quantity, condition: "baik" as ItemCondition }))
   );
   const [submitting, setSubmitting] = useState(false);
 
@@ -66,13 +66,17 @@ export default function CheckoutPage() {
       return { ...item, functional_quantity: Math.max(0, row.counted_quantity) };
     }));
 
+    const base = Date.now();
     const newAlerts: Alert[] = [];
     checklist.forEach((r, i) => {
       if (r.counted_quantity < r.initial_quantity) {
-        newAlerts.push({ id: Date.now() + i + 100, session_id: sessionId, lab_item_id: r.lab_item_id, type: "selisih", message: `${r.name} berkurang ${r.initial_quantity - r.counted_quantity} unit saat sesi ${user?.name} di ${lab?.name}.`, created_at: now });
+        newAlerts.push({ id: base + i * 10 + 1, session_id: sessionId, lab_item_id: r.lab_item_id, type: "selisih", message: `${r.name} berkurang ${r.initial_quantity - r.counted_quantity} unit saat sesi ${user?.name} di ${lab?.name}.`, created_at: now });
       }
       if (r.condition === "rusak") {
-        newAlerts.push({ id: Date.now() + i + 200, session_id: sessionId, lab_item_id: r.lab_item_id, type: "rusak", message: `${r.name} dilaporkan rusak oleh ${user?.name} di ${lab?.name}.`, created_at: now });
+        newAlerts.push({ id: base + i * 10 + 2, session_id: sessionId, lab_item_id: r.lab_item_id, type: "rusak", message: `${r.name} dilaporkan rusak oleh ${user?.name} di ${lab?.name}.`, created_at: now });
+      }
+      if (r.condition === "hilang") {
+        newAlerts.push({ id: base + i * 10 + 3, session_id: sessionId, lab_item_id: r.lab_item_id, type: "selisih", message: `${r.name} dilaporkan hilang oleh ${user?.name} di ${lab?.name}.`, created_at: now });
       }
     });
     if (newAlerts.length > 0) setAlerts((prev) => [...prev, ...newAlerts]);
@@ -101,16 +105,16 @@ export default function CheckoutPage() {
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <Label className="text-xs text-gray-500">Jumlah Aktual</Label>
-                  <Input type="number" min={0} value={row.counted_quantity} onChange={(e) => updateRow(idx, "counted_quantity", Number(e.target.value))} className={row.counted_quantity < row.initial_quantity ? "border-red-300 bg-red-50" : ""} />
+                  <Label htmlFor={`counted-qty-${idx}`} className="text-xs text-gray-500">Jumlah Aktual</Label>
+                  <Input id={`counted-qty-${idx}`} type="number" min={0} value={row.counted_quantity} onChange={(e) => updateRow(idx, "counted_quantity", Number(e.target.value))} className={row.counted_quantity < row.initial_quantity ? "border-red-300 bg-red-50" : ""} />
                   {row.counted_quantity < row.initial_quantity && (
                     <p className="text-xs text-red-500 flex items-center gap-1"><TriangleAlert className="h-3 w-3" />Kurang {row.initial_quantity - row.counted_quantity} unit</p>
                   )}
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-xs text-gray-500">Kondisi</Label>
+                  <Label htmlFor={`condition-${idx}`} className="text-xs text-gray-500">Kondisi</Label>
                   <Select value={row.condition} onValueChange={(v) => updateRow(idx, "condition", v ?? "baik")}>
-                    <SelectTrigger className={row.condition !== "baik" ? "border-red-300 bg-red-50" : ""}><SelectValue /></SelectTrigger>
+                    <SelectTrigger id={`condition-${idx}`} className={row.condition !== "baik" ? "border-red-300 bg-red-50" : ""}><SelectValue /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="baik">✅ Baik</SelectItem>
                       <SelectItem value="rusak">⚠️ Rusak</SelectItem>

@@ -126,22 +126,22 @@ export default function ItemsPage() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Nama Barang</Label>
-                <Input value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} placeholder="cth. PC / Komputer" />
+                <Label htmlFor="item-name">Nama Barang</Label>
+                <Input id="item-name" value={form.name} onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))} placeholder="cth. PC / Komputer" />
               </div>
               <div className="space-y-2">
-                <Label>Kategori</Label>
-                <Input value={form.category} onChange={(e) => setForm((p) => ({ ...p, category: e.target.value }))} placeholder="cth. Hardware" />
+                <Label htmlFor="item-category">Kategori</Label>
+                <Input id="item-category" value={form.category} onChange={(e) => setForm((p) => ({ ...p, category: e.target.value }))} placeholder="cth. Hardware" />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label>Jumlah Awal</Label>
-                <Input type="number" min={0} value={form.initial_quantity} onChange={(e) => setForm((p) => ({ ...p, initial_quantity: Number(e.target.value) }))} />
+                <Label htmlFor="item-initial">Jumlah Awal</Label>
+                <Input id="item-initial" type="number" min={0} value={form.initial_quantity} onChange={(e) => setForm((p) => ({ ...p, initial_quantity: Number(e.target.value) }))} />
               </div>
               <div className="space-y-2">
-                <Label>Jumlah Berfungsi</Label>
-                <Input type="number" min={0} value={form.functional_quantity} onChange={(e) => setForm((p) => ({ ...p, functional_quantity: Number(e.target.value) }))} />
+                <Label htmlFor="item-functional">Jumlah Berfungsi</Label>
+                <Input id="item-functional" type="number" min={0} value={form.functional_quantity} onChange={(e) => setForm((p) => ({ ...p, functional_quantity: Number(e.target.value) }))} />
               </div>
             </div>
           </div>
