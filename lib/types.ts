@@ -58,3 +58,15 @@ export interface Alert {
   message: string;
   created_at: string;
 }
+
+export type LostReportStatus = "baru" | "diproses" | "selesai";
+
+export interface LostItemReport {
+  id: number;
+  session_id: number;
+  lab_item_id: number;
+  class_id: number;
+  description: string;
+  status: LostReportStatus;
+  created_at: string;
+}

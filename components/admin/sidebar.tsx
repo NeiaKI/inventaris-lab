@@ -4,22 +4,26 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { clearSession } from "@/lib/auth";
-import { LayoutDashboard, FlaskConical, Package, Users, ClipboardList, LogOut } from "lucide-react";
+import { LayoutDashboard, FlaskConical, Package, Users, ClipboardList, LogOut, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-const navItems = [
-  { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/labs", label: "Laboratorium", icon: FlaskConical },
-  { href: "/admin/items", label: "Master Barang", icon: Package },
-  { href: "/admin/classes", label: "Akun Kelas", icon: Users },
-  { href: "/admin/sessions", label: "Log Sesi", icon: ClipboardList },
-];
+import { useLostReports } from "@/lib/store";
 
 export function AdminSidebar() {
   const pathname = usePathname();
   const router = useRouter();
+  const [lostReports] = useLostReports();
+  const newLostCount = lostReports.filter((r) => r.status === "baru").length;
 
   const handleLogout = () => { clearSession(); router.push("/"); };
+
+  const navItems = [
+    { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard, badge: 0 },
+    { href: "/admin/labs", label: "Laboratorium", icon: FlaskConical, badge: 0 },
+    { href: "/admin/items", label: "Master Barang", icon: Package, badge: 0 },
+    { href: "/admin/classes", label: "Akun Kelas", icon: Users, badge: 0 },
+    { href: "/admin/sessions", label: "Log Sesi", icon: ClipboardList, badge: 0 },
+    { href: "/admin/lost-reports", label: "Barang Hilang", icon: AlertTriangle, badge: newLostCount },
+  ];
 
   return (
     <aside className="flex flex-col w-64 min-h-screen bg-gray-900 text-white">
@@ -34,7 +38,7 @@ export function AdminSidebar() {
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1">
-        {navItems.map(({ href, label, icon: Icon }) => (
+        {navItems.map(({ href, label, icon: Icon, badge }) => (
           <Link
             key={href}
             href={href}
@@ -44,7 +48,12 @@ export function AdminSidebar() {
             )}
           >
             <Icon className="h-4 w-4 shrink-0" />
-            {label}
+            <span className="flex-1">{label}</span>
+            {badge > 0 && (
+              <span className="inline-flex items-center justify-center bg-red-500 text-white text-xs font-bold rounded-full h-5 min-w-[20px] px-1">
+                {badge}
+              </span>
+            )}
           </Link>
         ))}
       </nav>

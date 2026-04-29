@@ -1,4 +1,4 @@
-import type { Lab, LabItem, ClassAccount, Session, Alert } from "./types";
+import type { Lab, LabItem, ClassAccount, Session, Alert, LostItemReport } from "./types";
 
 export const MOCK_LABS: Lab[] = [
   { id: 1, name: "Lab Komputer 1", location: "Gedung A, Lantai 2", created_at: "2024-01-10" },
@@ -42,4 +42,9 @@ export const MOCK_ALERTS: Alert[] = [
   { id: 2, session_id: 2, lab_item_id: 8, type: "rusak", message: "Monitor dilaporkan rusak oleh XI RPL 1 di Lab RPL.", created_at: "2025-04-26T12:05:00" },
 ];
 
+export const MOCK_LOST_REPORTS: LostItemReport[] = [];
+
 export const ADMIN_CREDENTIALS = { username: "admin", password: "admin123" };
+
+// Ganti nomor WA admin di sini (format: 62xxx tanpa +)
+export const ADMIN_WA_NUMBER = "6289652865939";

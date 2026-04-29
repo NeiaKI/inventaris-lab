@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import type { Lab, LabItem, ClassAccount, Session, Alert, SessionItemStatus } from "./types";
-import { MOCK_LABS, MOCK_ITEMS, MOCK_CLASSES, MOCK_SESSIONS, MOCK_ALERTS } from "./mock-data";
+import type { Lab, LabItem, ClassAccount, Session, Alert, SessionItemStatus, LostItemReport } from "./types";
+import { MOCK_LABS, MOCK_ITEMS, MOCK_CLASSES, MOCK_SESSIONS, MOCK_ALERTS, MOCK_LOST_REPORTS } from "./mock-data";
 
 function useLocalStorage<T>(key: string, initial: T) {
   const [value, setValue] = useState<T>(() => {
@@ -31,3 +31,4 @@ export function useClasses() { return useLocalStorage<ClassAccount[]>("inv_class
 export function useSessions() { return useLocalStorage<Session[]>("inv_sessions", MOCK_SESSIONS); }
 export function useAlerts() { return useLocalStorage<Alert[]>("inv_alerts", MOCK_ALERTS); }
 export function useSessionItemStatuses() { return useLocalStorage<SessionItemStatus[]>("inv_session_statuses", []); }
+export function useLostReports() { return useLocalStorage<LostItemReport[]>("inv_lost_reports", MOCK_LOST_REPORTS); }
