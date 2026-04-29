@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -34,6 +34,18 @@ export default function ResultPage() {
   const lab = useMemo(() => labs.find((l) => l.id === session?.lab_id), [labs, session]);
   const kelas = useMemo(() => classes.find((c) => c.id === session?.class_id), [classes, session]);
   const sessionAlerts = useMemo(() => alerts.filter((a) => a.session_id === sessionId), [alerts, sessionId]);
+
+  type ChecklistSnapshot = { lab_item_id: number; name: string; initial_quantity: number; counted_quantity: number; condition: string };
+  const [snapshot, setSnapshot] = useState<ChecklistSnapshot[]>([]);
+  useEffect(() => {
+    const raw = sessionStorage.getItem(`checkout-${sessionId}`);
+    if (raw) setSnapshot(JSON.parse(raw));
+  }, [sessionId]);
+
+  const issueRows = useMemo(
+    () => snapshot.filter((r) => r.counted_quantity < r.initial_quantity || r.condition !== "baik"),
+    [snapshot]
+  );
 
   if (!session) {
     return (
@@ -99,7 +111,43 @@ export default function ResultPage() {
           </div>
         </div>
 
-        {!isAman && sessionAlerts.length > 0 && (
+        {!isAman && issueRows.length > 0 && (
+          <div className="mt-5 text-left">
+            <p className="text-xs font-semibold text-red-600 uppercase tracking-wide mb-2">Detail Barang Bermasalah</p>
+            <div className="rounded-lg overflow-hidden border border-red-200">
+              <table className="w-full text-xs">
+                <thead className="bg-red-100 text-red-700">
+                  <tr>
+                    <th className="text-left px-3 py-2 font-semibold">Barang</th>
+                    <th className="text-center px-3 py-2 font-semibold">Seharusnya</th>
+                    <th className="text-center px-3 py-2 font-semibold">Aktual</th>
+                    <th className="text-center px-3 py-2 font-semibold">Kondisi</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {issueRows.map((r) => (
+                    <tr key={r.lab_item_id} className="bg-white border-t border-red-100">
+                      <td className="px-3 py-2 font-medium text-gray-800">{r.name}</td>
+                      <td className="px-3 py-2 text-center text-gray-600">{r.initial_quantity}</td>
+                      <td className={`px-3 py-2 text-center font-semibold ${r.counted_quantity < r.initial_quantity ? "text-red-600" : "text-gray-800"}`}>
+                        {r.counted_quantity}
+                        {r.counted_quantity < r.initial_quantity && (
+                          <span className="ml-1 text-red-400">(-{r.initial_quantity - r.counted_quantity})</span>
+                        )}
+                      </td>
+                      <td className="px-3 py-2 text-center">
+                        {r.condition === "baik" && <span className="text-green-600">✅ Baik</span>}
+                        {r.condition === "rusak" && <span className="text-yellow-600">⚠️ Rusak</span>}
+                        {r.condition === "hilang" && <span className="text-red-600">❌ Hilang</span>}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+        {!isAman && issueRows.length === 0 && sessionAlerts.length > 0 && (
           <div className="mt-5 text-left space-y-2">
             <p className="text-xs font-semibold text-red-600 uppercase tracking-wide">Detail Masalah</p>
             {sessionAlerts.map((a) => (

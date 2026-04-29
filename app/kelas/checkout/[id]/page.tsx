@@ -102,6 +102,8 @@ export default function CheckoutPage() {
   const handleSubmit = () => {
     setSubmitting(true);
     const now = new Date().toISOString();
+    // Persist checklist snapshot so the result page can show expected vs actual
+    sessionStorage.setItem(`checkout-${sessionId}`, JSON.stringify(checklist));
 
     const newStatuses: SessionItemStatus[] = checklist.map((r, i) => ({
       id: Date.now() + i, session_id: sessionId, lab_item_id: r.lab_item_id, counted_quantity: r.counted_quantity, condition: r.condition,
@@ -161,10 +163,12 @@ export default function CheckoutPage() {
                     value={row.counted_quantity}
                     onChange={(e) => {
                       const raw = e.target.value.replace(/[^0-9]/g, "");
-                      updateRow(idx, "counted_quantity", raw === "" ? 0 : parseInt(raw, 10));
+                      const parsed = raw === "" ? 0 : parseInt(raw, 10);
+                      updateRow(idx, "counted_quantity", Math.min(parsed, row.initial_quantity));
                     }}
                     className={row.counted_quantity < row.initial_quantity ? "border-red-300 bg-red-50" : ""}
                   />
+                  <p className="text-xs text-gray-400">Maks: {row.initial_quantity} unit</p>
                   {row.counted_quantity < row.initial_quantity && (
                     <p className="text-xs text-red-500 flex items-center gap-1"><TriangleAlert className="h-3 w-3" />Kurang {row.initial_quantity - row.counted_quantity} unit</p>
                   )}
