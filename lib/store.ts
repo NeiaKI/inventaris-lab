@@ -57,7 +57,7 @@ function useSupabaseTable<T extends { id: number }>(tableName: string, initial: 
 
     // Realtime subscription — re-fetch on any external change
     const channel = supabase
-      .channel(`realtime:${tableName}`)
+      .channel(`${tableName}-${Math.random().toString(36).slice(2)}`)
       .on("postgres_changes", { event: "*", schema: "public", table: tableName }, () => {
         supabase.from(tableName).select("*").then(({ data }) => {
           if (data) {

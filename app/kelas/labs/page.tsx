@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,8 +18,11 @@ export default function LabSelectionPage() {
   const [items] = useItems();
   const [sessions, setSessions] = useSessions();
   const [confirmLab, setConfirmLab] = useState<number | null>(null);
+  const [user, setUser] = useState<ReturnType<typeof getSession> | null>(null);
 
-  const user = typeof window !== "undefined" ? getSession() : null;
+  useEffect(() => {
+    setUser(getSession());
+  }, []);
 
   const activeSessionByClass = useMemo(
     () => sessions.find((s) => s.class_id === user?.id && s.status === "aktif"),

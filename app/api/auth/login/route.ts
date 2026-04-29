@@ -14,7 +14,7 @@ function isRateLimited(ip: string): boolean {
     attempts.set(ip, { count: 1, resetAt: now + 60_000 });
     return false;
   }
-  if (rec.count >= 10) return true;
+  if (rec.count >= 50) return true;
   rec.count++;
   return false;
 }

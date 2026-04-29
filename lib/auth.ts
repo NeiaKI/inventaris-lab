@@ -23,18 +23,18 @@ export async function loginAsync(selected: string, password: string): Promise<Au
 export function getSession(): AuthUser | null {
   if (typeof window === "undefined") return null;
   try {
-    const raw = sessionStorage.getItem("inv_user");
+    const raw = localStorage.getItem("inv_user");
     return raw ? JSON.parse(raw) : null;
   } catch { return null; }
 }
 
 export function saveSession(user: AuthUser) {
-  sessionStorage.setItem("inv_user", JSON.stringify(user));
+  localStorage.setItem("inv_user", JSON.stringify(user));
 }
 
 export function clearSession() {
   if (typeof window !== "undefined") {
-    sessionStorage.removeItem("inv_user");
+    localStorage.removeItem("inv_user");
     // Clear server-side cookie (fire and forget)
     fetch("/api/auth/logout", { method: "POST" }).catch(() => {});
   }
