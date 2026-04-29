@@ -60,14 +60,30 @@ export default function LostReportsPage() {
   }
 
   function handleWA(r: typeof enriched[0]) {
-    const text = encodeURIComponent(
-      `Halo ${r.kelasName}, laporan barang hilang Anda sudah kami terima.\n\n` +
+    const detail =
       `- Barang: ${r.itemName}\n` +
       `- Lab: ${r.labName}\n` +
-      (r.description ? `- Keterangan: ${r.description}\n` : "") +
-      `\nAkan segera kami tindaklanjuti.`
+      (r.description ? `- Keterangan: ${r.description}\n` : "");
+
+    const bodyByStatus: Record<LostReportStatus, string> = {
+      baru:
+        `Halo ${r.kelasName}, laporan barang hilang Anda sudah kami terima.\n\n` +
+        detail +
+        `\nAkan segera kami tindaklanjuti. Mohon ditunggu.`,
+      diproses:
+        `Halo ${r.kelasName}, laporan barang hilang Anda sedang kami proses.\n\n` +
+        detail +
+        `\nTim kami sedang menangani kasus ini. Kami akan segera menginformasikan hasilnya.`,
+      selesai:
+        `Halo ${r.kelasName}, laporan barang hilang Anda telah selesai ditangani.\n\n` +
+        detail +
+        `\nTerima kasih atas laporannya. Silakan hubungi kami jika ada pertanyaan lebih lanjut.`,
+    };
+
+    window.open(
+      `https://wa.me/${ADMIN_WA_NUMBER}?text=${encodeURIComponent(bodyByStatus[r.status])}`,
+      "_blank"
     );
-    window.open(`https://wa.me/${ADMIN_WA_NUMBER}?text=${text}`, "_blank");
   }
 
   return (
