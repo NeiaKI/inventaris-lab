@@ -4,7 +4,6 @@ import { useState, useMemo } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -101,12 +100,22 @@ export default function CheckoutPage() {
             <div key={row.lab_item_id} className="border rounded-lg p-4 bg-gray-50">
               <div className="flex items-center justify-between mb-3">
                 <p className="font-medium text-sm">{row.name}</p>
-                <Badge variant="outline" className="text-xs">Awal: {row.initial_quantity} unit</Badge>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <Label htmlFor={`counted-qty-${idx}`} className="text-xs text-gray-500">Jumlah Aktual</Label>
-                  <Input id={`counted-qty-${idx}`} type="number" min={0} value={row.counted_quantity} onChange={(e) => updateRow(idx, "counted_quantity", Number(e.target.value))} className={row.counted_quantity < row.initial_quantity ? "border-red-300 bg-red-50" : ""} />
+                  <Input
+                    id={`counted-qty-${idx}`}
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    value={row.counted_quantity}
+                    onChange={(e) => {
+                      const raw = e.target.value.replace(/[^0-9]/g, "");
+                      updateRow(idx, "counted_quantity", raw === "" ? 0 : parseInt(raw, 10));
+                    }}
+                    className={row.counted_quantity < row.initial_quantity ? "border-red-300 bg-red-50" : ""}
+                  />
                   {row.counted_quantity < row.initial_quantity && (
                     <p className="text-xs text-red-500 flex items-center gap-1"><TriangleAlert className="h-3 w-3" />Kurang {row.initial_quantity - row.counted_quantity} unit</p>
                   )}
