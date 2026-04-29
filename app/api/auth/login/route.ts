@@ -20,7 +20,12 @@ function isRateLimited(ip: string): boolean {
 }
 
 function makeSessionCookie(user: AuthUser): string {
-  return Buffer.from(JSON.stringify(user)).toString("base64");
+  // base64url: no +, /, or = — safe for cookie values
+  return Buffer.from(JSON.stringify(user))
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=/g, "");
 }
 
 export async function POST(req: NextRequest) {

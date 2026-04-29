@@ -5,7 +5,10 @@ function getSessionFromCookie(req: NextRequest): AuthUser | null {
   const token = req.cookies.get("inv_session")?.value;
   if (!token) return null;
   try {
-    return JSON.parse(atob(token)) as AuthUser;
+    // Decode base64url: restore +, / and add padding
+    const std = token.replace(/-/g, "+").replace(/_/g, "/");
+    const padded = std.padEnd(std.length + (4 - std.length % 4) % 4, "=");
+    return JSON.parse(atob(padded)) as AuthUser;
   } catch {
     return null;
   }

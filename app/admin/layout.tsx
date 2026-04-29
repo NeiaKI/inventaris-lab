@@ -16,7 +16,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const u = getSession();
     if (u?.role === "admin") {
       setStatus("authed");
-      if (pathname === "/admin") router.replace("/admin/dashboard");
     } else {
       setStatus("unauthed");
       if (pathname !== "/admin") router.replace("/admin");
