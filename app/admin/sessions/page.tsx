@@ -10,6 +10,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Search, CheckCircle2, TriangleAlert, Clock, StopCircle } from "lucide-react";
 import { useSessions, useLabs, useClasses } from "@/lib/store";
 import type { Session, SessionStatus } from "@/lib/types";
+import { toast } from "sonner";
 
 const STATUS_CONFIG: Record<SessionStatus, { label: string; className: string; icon: React.ReactNode }> = {
   aman: { label: "Aman", className: "bg-green-100 text-green-700", icon: <CheckCircle2 className="h-3 w-3" /> },
@@ -45,10 +46,12 @@ export default function SessionsPage() {
   function handleForceEnd() {
     if (!confirmSession) return;
     const now = new Date().toISOString();
+    const target = confirmSession;
     setSessions((prev) =>
-      prev.map((s) => s.id === confirmSession.id ? { ...s, ended_at: now, status: "pending" as SessionStatus } : s)
+      prev.map((s) => s.id === target.id ? { ...s, ended_at: now, status: "pending" as SessionStatus } : s)
     );
     setConfirmSession(null);
+    toast.success("Sesi diakhiri", { description: `Sesi ${classMap[target.class_id]} di ${labMap[target.lab_id]} telah ditutup oleh admin.` });
   }
 
   return (

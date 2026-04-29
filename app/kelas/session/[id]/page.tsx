@@ -14,6 +14,7 @@ import { useSessions, useLabs, useItems, useLostReports } from "@/lib/store";
 import { getSession } from "@/lib/auth";
 import { ADMIN_WA_NUMBER } from "@/lib/mock-data";
 import type { LostItemReport } from "@/lib/types";
+import { toast } from "sonner";
 
 function elapsed(from: string) {
   const ms = Date.now() - new Date(from).getTime();
@@ -76,6 +77,7 @@ export default function ActiveSessionPage() {
     };
     setLostReports((prev) => [...prev, report]);
     setSubmitted(true);
+    toast.success("Laporan terkirim", { description: `Barang hilang: ${selectedItem?.name} telah dilaporkan ke admin.` });
   }
 
   function handleReportViaWA() {

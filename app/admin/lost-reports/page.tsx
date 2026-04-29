@@ -10,6 +10,7 @@ import { AlertTriangle, MessageCircle } from "lucide-react";
 import { useLostReports, useItems, useLabs, useClasses, useSessions } from "@/lib/store";
 import { ADMIN_WA_NUMBER } from "@/lib/mock-data";
 import type { LostReportStatus, LostItemReport } from "@/lib/types";
+import { toast } from "sonner";
 
 const statusLabel: Record<LostReportStatus, string> = {
   baru: "Baru",
@@ -49,6 +50,8 @@ export default function LostReportsPage() {
 
   function updateStatus(id: number, status: LostReportStatus) {
     setReports((prev) => prev.map((r) => r.id === id ? { ...r, status } : r));
+    const label = { baru: "Baru", diproses: "Diproses", selesai: "Selesai" }[status];
+    toast.success("Status diperbarui", { description: `Laporan ditandai sebagai "${label}".` });
   }
 
   function handleWA(r: typeof enriched[0]) {
