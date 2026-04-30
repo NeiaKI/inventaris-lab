@@ -9,7 +9,12 @@ import {
 export async function GET() {
   const { data: existing } = await supabase.from("labs").select("id").limit(1);
   if (existing && existing.length > 0) {
-    return NextResponse.json({ ok: true, message: "Database sudah ada datanya. Gunakan /api/reset untuk mereset." });
+    // DB already has core data — only upsert tables that may be missing (e.g. new features)
+    const { error } = await supabase.from("lab_schedules").upsert(MOCK_SCHEDULES);
+    if (error) {
+      return NextResponse.json({ ok: false, message: "Tabel lab_schedules belum dibuat. Buat dulu di Supabase SQL Editor, lalu akses URL ini lagi.", error: error.message }, { status: 500 });
+    }
+    return NextResponse.json({ ok: true, message: "lab_schedules berhasil di-seed. Tabel lain sudah ada." });
   }
   return seed();
 }
