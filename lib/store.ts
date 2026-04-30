@@ -46,7 +46,10 @@ function useSupabaseTable<T extends { id: number }>(tableName: string, initial: 
       .select("*")
       .then(({ data, error }) => {
         if (error) {
-          toast.error("Gagal memuat data", { description: "Periksa koneksi internet Anda." });
+          // 42P01 = table does not exist yet — fall back to mock data silently
+          if (error.code !== "42P01" && !error.message?.includes("does not exist")) {
+            toast.error("Gagal memuat data", { description: "Periksa koneksi internet Anda." });
+          }
           return;
         }
         if (data !== null) {

@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import { supabase } from "@/lib/supabase";
 import {
   MOCK_LABS, MOCK_ITEMS, MOCK_CLASSES, MOCK_SESSIONS,
-  MOCK_ALERTS, MOCK_LOST_REPORTS, ADMIN_CREDENTIALS,
+  MOCK_ALERTS, MOCK_LOST_REPORTS, MOCK_SCHEDULES, ADMIN_CREDENTIALS,
 } from "@/lib/mock-data";
 
 export async function GET() {
@@ -28,6 +28,7 @@ async function seed() {
     supabase.from("sessions").upsert(MOCK_SESSIONS),
     supabase.from("alerts").upsert(MOCK_ALERTS),
     supabase.from("lost_item_reports").upsert(MOCK_LOST_REPORTS),
+    supabase.from("lab_schedules").upsert(MOCK_SCHEDULES),
     supabase.from("admin_settings").upsert({ key: "admin_password_hash", value: adminHash }),
   ];
 
