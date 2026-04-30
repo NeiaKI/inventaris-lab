@@ -7,7 +7,26 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { FlaskConical, Package, Users, TriangleAlert, CheckCircle2, Clock, AlertCircle, AlertTriangle, X, CheckCheck } from "lucide-react";
+import { FlaskConical, Package, Users, TriangleAlert, CheckCircle2, Clock, AlertCircle, AlertTriangle, X, CheckCheck, Download } from "lucide-react";
+import type { Alert as AlertType } from "@/lib/types";
+
+function exportAlertsCSV(alerts: AlertType[], itemMap: Record<number, string>) {
+  const header = ["Tipe", "Barang", "Pesan", "Tanggal"];
+  const rows = alerts.map((a) => [
+    a.type === "selisih" ? "Selisih" : "Rusak",
+    itemMap[a.lab_item_id] ?? "-",
+    a.message,
+    new Date(a.created_at).toLocaleString("id-ID", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }),
+  ]);
+  const csv = [header, ...rows].map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+  const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const el = document.createElement("a");
+  el.href = url;
+  el.download = `peringatan-${new Date().toISOString().slice(0, 10)}.csv`;
+  el.click();
+  URL.revokeObjectURL(url);
+}
 import { useLabs, useItems, useClasses, useSessions, useAlerts, useLostReports } from "@/lib/store";
 
 function fmt(dt: string) {
@@ -113,14 +132,24 @@ export default function DashboardPage() {
                 </span>
               )}
               {alerts.length > 0 && (
-                <button
-                  onClick={() => setConfirmClearAll(true)}
-                  className="ml-auto flex items-center gap-1 text-xs text-gray-400 hover:text-green-600 transition-colors"
-                  title="Selesaikan semua"
-                >
-                  <CheckCheck className="h-3.5 w-3.5" />
-                  Selesaikan Semua
-                </button>
+                <div className="ml-auto flex items-center gap-2">
+                  <button
+                    onClick={() => exportAlertsCSV(alerts, itemMap)}
+                    className="flex items-center gap-1 text-xs text-gray-400 hover:text-blue-600 transition-colors"
+                    title="Export CSV"
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                    Export
+                  </button>
+                  <button
+                    onClick={() => setConfirmClearAll(true)}
+                    className="flex items-center gap-1 text-xs text-gray-400 hover:text-green-600 transition-colors"
+                    title="Selesaikan semua"
+                  >
+                    <CheckCheck className="h-3.5 w-3.5" />
+                    Selesaikan Semua
+                  </button>
+                </div>
               )}
             </CardTitle>
           </CardHeader>

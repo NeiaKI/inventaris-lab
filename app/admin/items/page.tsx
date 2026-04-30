@@ -9,8 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Plus, Pencil, Trash2, TriangleAlert, Upload, Download } from "lucide-react";
-import { useItems, useLabs } from "@/lib/store";
+import { Plus, Pencil, Trash2, TriangleAlert, Upload, Download, RotateCcw, History } from "lucide-react";
+import { useItems, useLabs, useSessionItemStatuses, useSessions, useClasses } from "@/lib/store";
 import { toast } from "sonner";
 import type { LabItem } from "@/lib/types";
 
@@ -31,14 +31,24 @@ function downloadTemplate() {
   URL.revokeObjectURL(url);
 }
 
+function fmtDt(dt: string) {
+  return new Date(dt).toLocaleString("id-ID", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" });
+}
+
 export default function ItemsPage() {
   const [items, setItems] = useItems();
   const [labs] = useLabs();
+  const [sessionStatuses] = useSessionItemStatuses();
+  const [sessions] = useSessions();
+  const [classes] = useClasses();
+
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<LabItem | null>(null);
   const [form, setForm] = useState<FormState>(EMPTY);
   const [filterLab, setFilterLab] = useState<string>("all");
   const [deleteTarget, setDeleteTarget] = useState<LabItem | null>(null);
+  const [restoreTarget, setRestoreTarget] = useState<LabItem | null>(null);
+  const [historyItem, setHistoryItem] = useState<LabItem | null>(null);
   const [importOpen, setImportOpen] = useState(false);
   const [importRows, setImportRows] = useState<FormState[]>([]);
   const [importError, setImportError] = useState("");
@@ -46,7 +56,23 @@ export default function ItemsPage() {
 
   const labMap = useMemo(() => Object.fromEntries(labs.map((l) => [l.id, l.name])), [labs]);
   const labNameMap = useMemo(() => Object.fromEntries(labs.map((l) => [l.name.toLowerCase(), l.id])), [labs]);
+  const classMap = useMemo(() => Object.fromEntries(classes.map((c) => [c.id, c.name])), [classes]);
   const filtered = useMemo(() => filterLab === "all" ? items : items.filter((i) => i.lab_id === Number(filterLab)), [items, filterLab]);
+
+  const historyRows = useMemo(() => {
+    if (!historyItem) return [];
+    return sessionStatuses
+      .filter((s) => s.lab_item_id === historyItem.id)
+      .map((s) => {
+        const sess = sessions.find((se) => se.id === s.session_id);
+        return { status: s, session: sess, className: sess ? (classMap[sess.class_id] ?? "-") : "-" };
+      })
+      .sort((a, b) => {
+        const ta = a.session?.started_at ?? "";
+        const tb = b.session?.started_at ?? "";
+        return tb.localeCompare(ta);
+      });
+  }, [historyItem, sessionStatuses, sessions, classMap]);
 
   const openCreate = () => { setEditing(null); setForm({ ...EMPTY, lab_id: labs[0]?.id ?? 0 }); setOpen(true); };
   const openEdit = (item: LabItem) => { setEditing(item); setForm({ lab_id: item.lab_id, name: item.name, category: item.category, initial_quantity: item.initial_quantity, functional_quantity: item.functional_quantity }); setOpen(true); };
@@ -70,13 +96,20 @@ export default function ItemsPage() {
     setDeleteTarget(null);
   };
 
+  const handleRestore = () => {
+    if (!restoreTarget) return;
+    setItems((prev) => prev.map((i) => i.id === restoreTarget.id ? { ...i, functional_quantity: i.initial_quantity } : i));
+    toast.success("Barang dipulihkan", { description: `${restoreTarget.name} kembali ke ${restoreTarget.initial_quantity} unit.` });
+    setRestoreTarget(null);
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
     reader.onload = (evt) => {
       const text = evt.target?.result as string;
-      const lines = text.trim().split(/\r?\n/).slice(1); // skip header
+      const lines = text.trim().split(/\r?\n/).slice(1);
       const rows: FormState[] = [];
       const errors: string[] = [];
       lines.forEach((line, idx) => {
@@ -159,21 +192,43 @@ export default function ItemsPage() {
             <TableBody>
               {filtered.length === 0 && <TableRow><TableCell colSpan={7} className="text-center text-gray-400 py-10">Belum ada data barang.</TableCell></TableRow>}
               {filtered.map((item) => {
-                const hasIssue = item.functional_quantity < item.initial_quantity;
+                const diff = item.initial_quantity - item.functional_quantity;
+                const isCritical = item.functional_quantity < item.initial_quantity * 0.5;
+                const hasIssue = diff > 0;
                 return (
                   <TableRow key={item.id}>
                     <TableCell className="font-medium">{item.name}</TableCell>
                     <TableCell><Badge variant="outline">{item.category}</Badge></TableCell>
                     <TableCell className="text-gray-600 text-sm">{labMap[item.lab_id] ?? "-"}</TableCell>
                     <TableCell className="text-center">{item.initial_quantity}</TableCell>
-                    <TableCell className="text-center"><span className={hasIssue ? "text-red-600 font-semibold" : "text-gray-700"}>{item.functional_quantity}</span></TableCell>
                     <TableCell className="text-center">
-                      {hasIssue
-                        ? <Badge variant="destructive" className="text-xs gap-1"><TriangleAlert className="h-3 w-3" />Selisih {item.initial_quantity - item.functional_quantity}</Badge>
-                        : <Badge className="bg-green-100 text-green-700 text-xs">Normal</Badge>}
+                      <span className={hasIssue ? (isCritical ? "text-red-700 font-bold" : "text-red-600 font-semibold") : "text-gray-700"}>
+                        {item.functional_quantity}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-center">
+                      {!hasIssue && <Badge className="bg-green-100 text-green-700 text-xs">Normal</Badge>}
+                      {hasIssue && !isCritical && (
+                        <Badge className="bg-orange-100 text-orange-700 border-orange-200 text-xs gap-1">
+                          <TriangleAlert className="h-3 w-3" />Selisih {diff}
+                        </Badge>
+                      )}
+                      {hasIssue && isCritical && (
+                        <Badge variant="destructive" className="text-xs gap-1">
+                          <TriangleAlert className="h-3 w-3" />Kritis — kurang {diff}
+                        </Badge>
+                      )}
                     </TableCell>
                     <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
+                      <div className="flex justify-end gap-1.5">
+                        <Button size="sm" variant="outline" title="Riwayat" onClick={() => setHistoryItem(item)}>
+                          <History className="h-3.5 w-3.5" />
+                        </Button>
+                        {hasIssue && (
+                          <Button size="sm" variant="outline" title="Pulihkan" className="text-green-600 border-green-200 hover:bg-green-50" onClick={() => setRestoreTarget(item)}>
+                            <RotateCcw className="h-3.5 w-3.5" />
+                          </Button>
+                        )}
                         <Button size="sm" variant="outline" onClick={() => openEdit(item)}><Pencil className="h-3.5 w-3.5" /></Button>
                         <Button size="sm" variant="outline" className="text-red-600 border-red-200 hover:bg-red-50" onClick={() => setDeleteTarget(item)}><Trash2 className="h-3.5 w-3.5" /></Button>
                       </div>
@@ -260,6 +315,80 @@ export default function ItemsPage() {
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteTarget(null)}>Batal</Button>
             <Button variant="destructive" onClick={handleDelete}>Hapus</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Restore Dialog */}
+      <Dialog open={!!restoreTarget} onOpenChange={() => setRestoreTarget(null)}>
+        <DialogContent aria-describedby={undefined}>
+          <DialogHeader><DialogTitle>Pulihkan Barang?</DialogTitle></DialogHeader>
+          <p className="text-sm text-gray-600">
+            Jumlah berfungsi <strong>{restoreTarget?.name}</strong> akan dikembalikan dari{" "}
+            <strong>{restoreTarget?.functional_quantity}</strong> → <strong>{restoreTarget?.initial_quantity}</strong> unit.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRestoreTarget(null)}>Batal</Button>
+            <Button className="bg-green-600 hover:bg-green-700" onClick={handleRestore}>
+              <RotateCcw className="h-4 w-4 mr-1.5" />Pulihkan
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* History Dialog */}
+      <Dialog open={!!historyItem} onOpenChange={() => setHistoryItem(null)}>
+        <DialogContent className="max-w-2xl" aria-describedby={undefined}>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <History className="h-5 w-5 text-blue-500" />
+              Riwayat Penggunaan: {historyItem?.name}
+            </DialogTitle>
+          </DialogHeader>
+          {historyRows.length === 0 ? (
+            <p className="text-sm text-gray-400 py-6 text-center">Belum ada riwayat penggunaan.</p>
+          ) : (
+            <div className="max-h-96 overflow-y-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Tanggal</TableHead>
+                    <TableHead>Kelas</TableHead>
+                    <TableHead className="text-center">Jumlah Dicek</TableHead>
+                    <TableHead className="text-center">Kondisi</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {historyRows.map(({ status, session, className }) => {
+                    const conditionConfig: Record<string, { label: string; className: string }> = {
+                      baik: { label: "✅ Baik", className: "bg-green-100 text-green-700" },
+                      rusak: { label: "⚠️ Rusak", className: "bg-red-100 text-red-700" },
+                      hilang: { label: "❌ Hilang", className: "bg-gray-100 text-gray-600" },
+                    };
+                    const cond = conditionConfig[status.condition] ?? { label: status.condition, className: "" };
+                    return (
+                      <TableRow key={status.id}>
+                        <TableCell className="text-sm text-gray-600">
+                          {session ? fmtDt(session.started_at) : "-"}
+                        </TableCell>
+                        <TableCell className="font-medium">{className}</TableCell>
+                        <TableCell className="text-center">
+                          <span className={status.counted_quantity < (historyItem?.initial_quantity ?? 0) ? "text-red-600 font-semibold" : "text-gray-700"}>
+                            {status.counted_quantity}
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <Badge className={`text-xs ${cond.className}`}>{cond.label}</Badge>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setHistoryItem(null)}>Tutup</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

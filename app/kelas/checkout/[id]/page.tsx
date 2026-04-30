@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ClipboardCheck, TriangleAlert, Loader2 } from "lucide-react";
+import { ClipboardCheck, TriangleAlert, Loader2, Printer } from "lucide-react";
 import { useSessions, useLabs, useItems, useAlerts, useSessionItemStatuses } from "@/lib/store";
 import { getSession } from "@/lib/auth";
 import type { ItemCondition, SessionItemStatus, Alert } from "@/lib/types";
@@ -136,6 +136,52 @@ export default function CheckoutPage() {
   };
 
   return (
+    <>
+      <style>{`
+        @media print {
+          body > * { display: none !important; }
+          #print-checklist { display: block !important; }
+        }
+        #print-checklist { display: none; }
+      `}</style>
+      <div id="print-checklist" className="p-8 font-sans">
+        <h2 className="text-xl font-bold mb-1">Checklist Akhir Sesi</h2>
+        <p className="text-sm text-gray-600 mb-4">{lab?.name} — dicetak {new Date().toLocaleString("id-ID")}</p>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+          <thead>
+            <tr style={{ borderBottom: "2px solid #333" }}>
+              <th style={{ textAlign: "left", padding: "6px 8px" }}>No</th>
+              <th style={{ textAlign: "left", padding: "6px 8px" }}>Nama Barang</th>
+              <th style={{ textAlign: "center", padding: "6px 8px" }}>Jml Seharusnya</th>
+              <th style={{ textAlign: "center", padding: "6px 8px" }}>Jml Aktual</th>
+              <th style={{ textAlign: "left", padding: "6px 8px", width: 120 }}>Kondisi</th>
+              <th style={{ textAlign: "left", padding: "6px 8px", width: 150 }}>Keterangan</th>
+            </tr>
+          </thead>
+          <tbody>
+            {checklist.map((row, i) => (
+              <tr key={row.lab_item_id} style={{ borderBottom: "1px solid #ddd" }}>
+                <td style={{ padding: "6px 8px" }}>{i + 1}</td>
+                <td style={{ padding: "6px 8px" }}>{row.name}</td>
+                <td style={{ textAlign: "center", padding: "6px 8px" }}>{row.initial_quantity}</td>
+                <td style={{ textAlign: "center", padding: "6px 8px" }}></td>
+                <td style={{ padding: "6px 8px" }}></td>
+                <td style={{ padding: "6px 8px" }}></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div style={{ marginTop: 40, display: "flex", gap: 40 }}>
+          <div>
+            <p style={{ fontSize: 12 }}>Petugas / Ketua Kelas</p>
+            <div style={{ marginTop: 40, borderTop: "1px solid #333", width: 150, fontSize: 12 }}>Tanda Tangan</div>
+          </div>
+          <div>
+            <p style={{ fontSize: 12 }}>Mengetahui / Admin</p>
+            <div style={{ marginTop: 40, borderTop: "1px solid #333", width: 150, fontSize: 12 }}>Tanda Tangan</div>
+          </div>
+        </div>
+      </div>
     <div className="max-w-2xl mx-auto p-6">
       <div className="mb-6">
         <h1 className="text-xl font-bold text-gray-900">Checklist Akhir Sesi</h1>
@@ -199,10 +245,14 @@ export default function CheckoutPage() {
 
       <div className="flex gap-3">
         <Button variant="outline" className="flex-1" onClick={() => router.push(`/kelas/session/${sessionId}`)} disabled={submitting}>Kembali</Button>
+        <Button variant="outline" onClick={() => window.print()} disabled={submitting} title="Cetak Checklist">
+          <Printer className="h-4 w-4" />
+        </Button>
         <Button className="flex-1 bg-blue-600 hover:bg-blue-700 h-12" onClick={handleSubmit} disabled={submitting}>
           <ClipboardCheck className="h-5 w-5 mr-2" />Submit & Tutup Sesi
         </Button>
       </div>
     </div>
+    </>
   );
 }
