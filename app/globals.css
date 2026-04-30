@@ -55,24 +55,7 @@
   --color-input:               hsl(217 33% 22%);
   --color-ring:                hsl(217 91% 60%);
 
-  /* ── Gray scale: flip light ↔ dark ends ──────────────────── */
-  --color-gray-50:  oklch(0.21  0.034 264.665);  /* was gray-900 */
-  --color-gray-100: oklch(0.278 0.033 256.848);  /* was gray-800 */
-  --color-gray-200: oklch(0.373 0.034 259.733);  /* was gray-700 */
-  --color-gray-900: oklch(0.985 0.002 247.839);  /* was gray-50  */
-  --color-gray-950: oklch(0.967 0.003 264.542);  /* was gray-100 */
-
-  /* ── Colored -50/-100 tints → dark tinted surfaces ───────── */
-  --color-blue-50:    oklch(0.18  0.05  260);
-  --color-blue-100:   oklch(0.22  0.06  260);
-  --color-red-50:     oklch(0.19  0.04   15);
-  --color-red-100:    oklch(0.24  0.05   15);
-  --color-orange-50:  oklch(0.19  0.04   40);
-  --color-orange-100: oklch(0.24  0.05   40);
-  --color-yellow-50:  oklch(0.19  0.04  100);
-  --color-yellow-100: oklch(0.24  0.05  100);
-  --color-green-50:   oklch(0.18  0.04  150);
-  --color-green-100:  oklch(0.23  0.05  150);
-  --color-purple-50:  oklch(0.18  0.04  290);
-  --color-purple-100: oklch(0.23  0.05  290);
+  /* ── Gray: only flip the two extremes ────────────────────── */
+  --color-gray-50:  oklch(0.21  0.034 264.665);  /* bg-gray-50  → dark surface */
+  --color-gray-900: oklch(0.985 0.002 247.839);  /* text-gray-900 → near-white */
 }
