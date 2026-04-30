@@ -41,8 +41,8 @@ test("alur lengkap sesi: mulai → aktif → checkout → result aman", async ({
   await page.getByRole("button", { name: "Akhiri Sesi & Cek Barang" }).click();
 
   await expect(page).toHaveURL(/\/kelas\/checkout\//, { timeout: 10000 });
-  await expect(page.getByText("Checklist Akhir Sesi")).toBeVisible({ timeout: 15000 });
-  await expect(page.locator("main").getByText("Lab Komputer 1")).toBeVisible({ timeout: 10000 });
+  await expect(page.getByRole("heading", { name: "Checklist Akhir Sesi", level: 1 })).toBeVisible({ timeout: 15000 });
+  await expect(page.getByText(/Isi jumlah aktual dan kondisi/)).toBeVisible({ timeout: 10000 });
 
   await page.getByRole("button", { name: "Submit & Tutup Sesi" }).click();
 
@@ -109,7 +109,7 @@ test("tombol kembali dari checkout ke halaman sesi aktif", async ({ page }) => {
 
   await page.getByRole("button", { name: "Akhiri Sesi & Cek Barang" }).click();
 
-  await expect(page.getByText("Checklist Akhir Sesi")).toBeVisible({ timeout: 10000 });
+  await expect(page.getByRole("heading", { name: "Checklist Akhir Sesi", level: 1 })).toBeVisible({ timeout: 10000 });
   await page.getByRole("button", { name: "Kembali" }).click();
   await expect(page.locator("main").getByText("Sesi Aktif")).toBeVisible({ timeout: 10000 });
 
