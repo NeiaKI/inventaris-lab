@@ -6,10 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertTriangle, MessageCircle, Filter } from "lucide-react";
+import { AlertTriangle, MessageCircle, Filter, ImageIcon } from "lucide-react";
 import { useLostReports, useItems, useLabs, useClasses, useSessions } from "@/lib/store";
 import { ADMIN_WA_NUMBER } from "@/lib/mock-data";
-import type { LostReportStatus, LostItemReport } from "@/lib/types";
+import type { LostReportStatus } from "@/lib/types";
 import { toast } from "sonner";
 
 const statusLabel: Record<LostReportStatus, string> = {
@@ -38,6 +38,7 @@ export default function LostReportsPage() {
   const [classes] = useClasses();
   const [sessions] = useSessions();
   const [filterStatus, setFilterStatus] = useState<LostReportStatus | "semua">("semua");
+  const [lightboxUrl, setLightboxUrl] = useState<string | null>(null);
 
   const enriched = useMemo(() => reports.map((r) => {
     const item = items.find((i) => i.id === r.lab_item_id);
@@ -138,6 +139,7 @@ export default function LostReportsPage() {
                   <TableHead>Lab</TableHead>
                   <TableHead>Barang</TableHead>
                   <TableHead>Keterangan</TableHead>
+                  <TableHead>Foto</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead className="text-right">Aksi</TableHead>
                 </TableRow>
@@ -149,8 +151,18 @@ export default function LostReportsPage() {
                     <TableCell className="font-medium text-sm">{r.kelasName}</TableCell>
                     <TableCell className="text-sm">{r.labName}</TableCell>
                     <TableCell className="text-sm font-semibold text-red-700">{r.itemName}</TableCell>
-                    <TableCell className="text-xs text-gray-600 max-w-[180px]">
+                    <TableCell className="text-xs text-gray-600 max-w-[160px]">
                       {r.description || <span className="text-gray-300">-</span>}
+                    </TableCell>
+                    <TableCell>
+                      {r.photo_url ? (
+                        <button onClick={() => setLightboxUrl(r.photo_url!)}>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={r.photo_url} alt="foto" className="h-9 w-9 object-cover rounded border border-gray-200 hover:opacity-80 transition-opacity" />
+                        </button>
+                      ) : (
+                        <ImageIcon className="h-4 w-4 text-gray-200" />
+                      )}
                     </TableCell>
                     <TableCell>
                       <Select
@@ -183,6 +195,22 @@ export default function LostReportsPage() {
             </Table>
           </CardContent>
         </Card>
+      )}
+
+      {/* Photo lightbox */}
+      {lightboxUrl && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70"
+          onClick={() => setLightboxUrl(null)}
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={lightboxUrl}
+            alt="foto kerusakan"
+            className="max-h-[85vh] max-w-[90vw] rounded-lg shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
       )}
     </div>
   );

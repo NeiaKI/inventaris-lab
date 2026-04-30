@@ -68,5 +68,19 @@ export interface LostItemReport {
   class_id: number;
   description: string;
   status: LostReportStatus;
+  photo_url?: string;
+  created_at: string;
+}
+
+export type DayOfWeek = "Senin" | "Selasa" | "Rabu" | "Kamis" | "Jumat" | "Sabtu";
+
+export interface LabSchedule {
+  id: number;
+  lab_id: number;
+  class_id: number | null;
+  day_of_week: DayOfWeek;
+  start_time: string;
+  end_time: string;
+  subject: string;
   created_at: string;
 }

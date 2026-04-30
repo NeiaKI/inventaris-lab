@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { toast } from "sonner";
-import type { Lab, LabItem, ClassAccount, Session, Alert, SessionItemStatus, LostItemReport } from "./types";
-import { MOCK_LABS, MOCK_ITEMS, MOCK_CLASSES, MOCK_SESSIONS, MOCK_ALERTS, MOCK_LOST_REPORTS } from "./mock-data";
+import type { Lab, LabItem, ClassAccount, Session, Alert, SessionItemStatus, LostItemReport, LabSchedule } from "./types";
+import { MOCK_LABS, MOCK_ITEMS, MOCK_CLASSES, MOCK_SESSIONS, MOCK_ALERTS, MOCK_LOST_REPORTS, MOCK_SCHEDULES } from "./mock-data";
 import { supabase } from "./supabase";
 
 const SYNC_EVENT = "inv-storage-sync";
@@ -123,3 +123,4 @@ export function useSessions() { return useSupabaseTable<Session>("sessions", MOC
 export function useAlerts() { return useSupabaseTable<Alert>("alerts", MOCK_ALERTS); }
 export function useSessionItemStatuses() { return useSupabaseTable<SessionItemStatus>("session_item_statuses", []); }
 export function useLostReports() { return useSupabaseTable<LostItemReport>("lost_item_reports", MOCK_LOST_REPORTS); }
+export function useSchedules() { return useSupabaseTable<LabSchedule>("lab_schedules", MOCK_SCHEDULES); }

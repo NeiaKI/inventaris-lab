@@ -9,10 +9,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { FlaskConical, MapPin, Clock, ClipboardCheck, Package, AlertTriangle, MessageCircle, Loader2 } from "lucide-react";
+import { FlaskConical, MapPin, Clock, ClipboardCheck, Package, AlertTriangle, MessageCircle, Loader2, Camera, X } from "lucide-react";
 import { useSessions, useLabs, useItems, useLostReports } from "@/lib/store";
 import { getSession } from "@/lib/auth";
 import { ADMIN_WA_NUMBER } from "@/lib/mock-data";
+import { supabase } from "@/lib/supabase";
 import type { LostItemReport } from "@/lib/types";
 import { toast } from "sonner";
 
@@ -36,6 +37,9 @@ export default function ActiveSessionPage() {
   const [selectedItemId, setSelectedItemId] = useState<string>("");
   const [description, setDescription] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const user = typeof window !== "undefined" ? getSession() : null;
   const sessionId = Number(id);
@@ -71,11 +75,40 @@ export default function ActiveSessionPage() {
     setSelectedItemId("");
     setDescription("");
     setSubmitted(false);
+    setPhotoFile(null);
+    setPhotoPreview(null);
     setDialogOpen(true);
   }
 
-  function handleSubmitReport() {
+  function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0] ?? null;
+    setPhotoFile(file);
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setPhotoPreview(url);
+    } else {
+      setPhotoPreview(null);
+    }
+  }
+
+  function removePhoto() {
+    setPhotoFile(null);
+    if (photoPreview) URL.revokeObjectURL(photoPreview);
+    setPhotoPreview(null);
+  }
+
+  async function handleSubmitReport() {
     if (!selectedItemId) return;
+    setUploading(true);
+    let photoUrl: string | undefined;
+    if (photoFile) {
+      const path = `reports/${Date.now()}-${photoFile.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+      const { data, error } = await supabase.storage.from("damage-photos").upload(path, photoFile, { upsert: false });
+      if (!error && data) {
+        const { data: urlData } = supabase.storage.from("damage-photos").getPublicUrl(data.path);
+        photoUrl = urlData.publicUrl;
+      }
+    }
     const report: LostItemReport = {
       id: Date.now(),
       session_id: sessionId,
@@ -83,9 +116,11 @@ export default function ActiveSessionPage() {
       class_id: user!.id,
       description: description.trim(),
       status: "baru",
+      photo_url: photoUrl,
       created_at: new Date().toISOString(),
     };
     setLostReports((prev) => [...prev, report]);
+    setUploading(false);
     setSubmitted(true);
     toast.success("Laporan terkirim", { description: `Barang hilang: ${selectedItem?.name} telah dilaporkan ke admin.` });
   }
@@ -215,13 +250,36 @@ export default function ActiveSessionPage() {
                 />
               </div>
 
+              <div className="space-y-1.5">
+                <Label>Foto Kerusakan <span className="text-gray-400 font-normal">(opsional)</span></Label>
+                {photoPreview ? (
+                  <div className="relative inline-block">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={photoPreview} alt="preview" className="h-24 w-24 object-cover rounded-lg border border-gray-200" />
+                    <button
+                      type="button"
+                      onClick={removePhoto}
+                      className="absolute -top-1.5 -right-1.5 bg-red-500 text-white rounded-full p-0.5 hover:bg-red-600"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ) : (
+                  <label className="flex items-center gap-2 cursor-pointer border border-dashed border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-500 hover:bg-gray-50 transition-colors">
+                    <Camera className="h-4 w-4 shrink-0" />
+                    <span>Ambil foto atau pilih dari galeri</span>
+                    <input type="file" accept="image/*" capture="environment" className="hidden" onChange={handlePhotoChange} />
+                  </label>
+                )}
+              </div>
+
               <div className="flex flex-col gap-2 pt-1">
                 <Button
                   className="w-full bg-red-600 hover:bg-red-700"
-                  disabled={!selectedItemId}
+                  disabled={!selectedItemId || uploading}
                   onClick={handleSubmitReport}
                 >
-                  <AlertTriangle className="h-4 w-4 mr-2" />
+                  {uploading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <AlertTriangle className="h-4 w-4 mr-2" />}
                   Kirim Laporan ke Admin
                 </Button>
                 <Button

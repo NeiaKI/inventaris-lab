@@ -1,4 +1,4 @@
-import type { Lab, LabItem, ClassAccount, Session, Alert, LostItemReport } from "./types";
+import type { Lab, LabItem, ClassAccount, Session, Alert, LostItemReport, LabSchedule } from "./types";
 
 export const MOCK_LABS: Lab[] = [
   { id: 1, name: "Lab Komputer 1", location: "Gedung A, Lantai 2", created_at: "2024-01-10" },
@@ -43,6 +43,15 @@ export const MOCK_ALERTS: Alert[] = [
 ];
 
 export const MOCK_LOST_REPORTS: LostItemReport[] = [];
+
+export const MOCK_SCHEDULES: LabSchedule[] = [
+  { id: 1, lab_id: 1, class_id: 1, day_of_week: "Senin", start_time: "07:00", end_time: "09:00", subject: "Pemrograman Dasar", created_at: "2024-01-10" },
+  { id: 2, lab_id: 1, class_id: 2, day_of_week: "Senin", start_time: "09:00", end_time: "11:00", subject: "Basis Data", created_at: "2024-01-10" },
+  { id: 3, lab_id: 2, class_id: 3, day_of_week: "Selasa", start_time: "07:00", end_time: "09:30", subject: "Rekayasa Perangkat Lunak", created_at: "2024-01-10" },
+  { id: 4, lab_id: 3, class_id: 4, day_of_week: "Rabu", start_time: "09:00", end_time: "11:00", subject: "Jaringan Komputer", created_at: "2024-01-10" },
+  { id: 5, lab_id: 1, class_id: 5, day_of_week: "Kamis", start_time: "07:00", end_time: "09:00", subject: "Pemrograman Web", created_at: "2024-01-10" },
+  { id: 6, lab_id: 2, class_id: 1, day_of_week: "Jumat", start_time: "07:00", end_time: "09:00", subject: "Proyek Perangkat Lunak", created_at: "2024-01-10" },
+];
 
 export const ADMIN_CREDENTIALS = { username: "admin", password: "admin123" };
 

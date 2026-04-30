@@ -7,16 +7,22 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { FlaskConical, MapPin, Play, TriangleAlert } from "lucide-react";
-import { useLabs, useSessions, useItems } from "@/lib/store";
+import { FlaskConical, MapPin, Play, TriangleAlert, Clock } from "lucide-react";
+import { useLabs, useSessions, useItems, useSchedules } from "@/lib/store";
 import { getSession } from "@/lib/auth";
-import type { Session } from "@/lib/types";
+import type { Session, DayOfWeek } from "@/lib/types";
+
+const TODAY_DAY: DayOfWeek | null = (() => {
+  const days: (DayOfWeek | null)[] = [null, "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+  return days[new Date().getDay()] ?? null;
+})();
 
 export default function LabSelectionPage() {
   const router = useRouter();
   const [labs] = useLabs();
   const [items] = useItems();
   const [sessions, setSessions] = useSessions();
+  const [schedules] = useSchedules();
   const [confirmLab, setConfirmLab] = useState<number | null>(null);
   const [user, setUser] = useState<ReturnType<typeof getSession> | null>(null);
 
@@ -31,6 +37,15 @@ export default function LabSelectionPage() {
 
   const busyLabs = useMemo(() => new Set(sessions.filter((s) => s.status === "aktif").map((s) => s.lab_id)), [sessions]);
   const itemCountPerLab = useMemo(() => Object.fromEntries(labs.map((l) => [l.id, items.filter((i) => i.lab_id === l.id).length])), [labs, items]);
+  const todaySchedulesByLab = useMemo(() => {
+    if (!TODAY_DAY) return {} as Record<number, typeof schedules>;
+    const byLab: Record<number, typeof schedules> = {};
+    schedules.filter((s) => s.day_of_week === TODAY_DAY).forEach((s) => {
+      if (!byLab[s.lab_id]) byLab[s.lab_id] = [];
+      byLab[s.lab_id].push(s);
+    });
+    return byLab;
+  }, [schedules]);
 
   const handleStart = () => {
     if (!confirmLab || !user) return;
@@ -77,6 +92,12 @@ export default function LabSelectionPage() {
                       <MapPin className="h-3 w-3" />{lab.location || "-"}
                       <span className="mx-1">·</span>{itemCountPerLab[lab.id] ?? 0} jenis barang
                     </div>
+                    {todaySchedulesByLab[lab.id]?.slice(0, 2).map((sched) => (
+                      <div key={sched.id} className="flex items-center gap-1 text-xs text-blue-500 mt-0.5">
+                        <Clock className="h-3 w-3 shrink-0" />
+                        <span>{sched.start_time}–{sched.end_time} · {sched.subject}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
