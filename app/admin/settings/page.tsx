@@ -182,7 +182,7 @@ export default function SettingsPage() {
                 onChange={(e) => setCurrentPwd(e.target.value)}
                 placeholder="Masukkan password saat ini"
               />
-              <button type="button" className="absolute right-2 top-2.5 text-gray-400 hover:text-gray-600" onClick={() => setShowPwd(!showPwd)}>
+              <button type="button" className="absolute right-2 top-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" onClick={() => setShowPwd(!showPwd)}>
                 {showPwd ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
             </div>
@@ -218,7 +218,7 @@ export default function SettingsPage() {
         </CardContent>
       </Card>
 
-      <Card className="border-red-200">
+      <Card className="border-red-200 dark:border-red-900">
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2 text-red-600">
             <RotateCcw className="h-4 w-4" />
@@ -226,12 +226,12 @@ export default function SettingsPage() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
             Hapus semua data sesi, laporan, dan perubahan inventaris. Data akan kembali ke kondisi awal (mock data). Aksi ini tidak dapat dibatalkan.
           </p>
           <Button
             variant="outline"
-            className="border-red-300 text-red-600 hover:bg-red-50"
+            className="border-red-300 text-red-600 hover:bg-red-50 dark:border-red-800 dark:text-red-400 dark:hover:bg-red-950"
             onClick={() => setResetOpen(true)}
           >
             <RotateCcw className="h-4 w-4 mr-2" />
@@ -249,7 +249,7 @@ export default function SettingsPage() {
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 pt-1">
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-sm text-red-700">
+            <div className="bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 rounded-lg p-4 text-sm text-red-700 dark:text-red-200">
               Semua data akan <strong>dihapus permanen</strong>: sesi, laporan hilang, perubahan inventaris, dan log peringatan. Data kembali ke kondisi demo awal.
             </div>
             <div className="flex gap-3">

@@ -65,7 +65,7 @@ export default function DashboardPage() {
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Dashboard</h1>
         <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Ringkasan kondisi laboratorium komputer</p>
       </div>
 
@@ -77,7 +77,7 @@ export default function DashboardPage() {
                 <div className={`p-3 rounded-xl ${color}`}><Icon className="h-5 w-5" /></div>
                 <div>
                   <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
-                  <p className={`text-2xl font-bold ${label === "Laporan Hilang Baru" && value > 0 ? "text-red-600" : "text-gray-900"}`}>{value}</p>
+                  <p className={`text-2xl font-bold ${label === "Laporan Hilang Baru" && value > 0 ? "text-red-600 dark:text-red-400" : "text-gray-900 dark:text-gray-100"}`}>{value}</p>
                 </div>
               </CardContent>
             </Card>
@@ -247,7 +247,7 @@ export default function DashboardPage() {
           <DialogHeader>
             <DialogTitle>Selesaikan Semua Peringatan?</DialogTitle>
           </DialogHeader>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-gray-300">
             Sebanyak <strong>{alerts.length} peringatan</strong> akan ditandai selesai dan dihapus dari daftar.
             Tindakan ini tidak memulihkan jumlah barang secara otomatis.
           </p>

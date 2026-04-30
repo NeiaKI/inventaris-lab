@@ -91,7 +91,7 @@ export default function LostReportsPage() {
     <div className="p-6 max-w-5xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+          <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
             <AlertTriangle className="h-5 w-5 text-red-500" />
             Laporan Barang Hilang
             {newCount > 0 && (
@@ -128,7 +128,7 @@ export default function LostReportsPage() {
       ) : (
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm text-gray-600">{displayed.length} laporan ditemukan</CardTitle>
+            <CardTitle className="text-sm text-gray-600 dark:text-gray-300">{displayed.length} laporan ditemukan</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
             <Table>
@@ -151,7 +151,7 @@ export default function LostReportsPage() {
                     <TableCell className="font-medium text-sm">{r.kelasName}</TableCell>
                     <TableCell className="text-sm">{r.labName}</TableCell>
                     <TableCell className="text-sm font-semibold text-red-700">{r.itemName}</TableCell>
-                    <TableCell className="text-xs text-gray-600 max-w-[160px]">
+                    <TableCell className="text-xs text-gray-600 dark:text-gray-300 max-w-[160px]">
                       {r.description || <span className="text-gray-300">-</span>}
                     </TableCell>
                     <TableCell>

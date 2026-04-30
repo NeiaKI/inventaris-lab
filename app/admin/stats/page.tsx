@@ -23,7 +23,7 @@ function SimpleBarChart({ data }: { data: { label: string; value: number; color?
     <div className="flex items-end gap-2 h-40">
       {data.map((d) => (
         <div key={d.label} className="flex-1 flex flex-col items-center gap-1 min-w-0">
-          <span className="text-xs text-gray-600 font-medium">{d.value}</span>
+          <span className="text-xs text-gray-600 dark:text-gray-300 font-medium">{d.value}</span>
           <div className="w-full rounded-t-sm transition-all" style={{
             height: `${Math.max((d.value / max) * 120, d.value > 0 ? 4 : 0)}px`,
             backgroundColor: d.color ?? "#3b82f6",
@@ -92,7 +92,7 @@ export default function StatsPage() {
   return (
     <div className="p-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Statistik</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Statistik</h1>
         <p className="text-gray-500 text-sm mt-1">Tren penggunaan dan kondisi laboratorium</p>
       </div>
 

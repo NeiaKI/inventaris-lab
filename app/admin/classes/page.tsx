@@ -59,7 +59,7 @@ export default function ClassesPage() {
     <div className="p-6 lg:p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Akun Kelas</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Akun Kelas</h1>
           <p className="text-gray-500 text-sm mt-1">Kelola akun login untuk Ketua Kelas</p>
         </div>
         <Button onClick={openCreate} className="bg-blue-600 hover:bg-blue-700"><Plus className="h-4 w-4 mr-2" />Tambah Kelas</Button>
@@ -83,7 +83,7 @@ export default function ClassesPage() {
                 <TableRow key={c.id}>
                   <TableCell className="text-gray-400 text-sm">{idx + 1}</TableCell>
                   <TableCell className="font-medium">{c.name}</TableCell>
-                  <TableCell className="text-gray-600 font-mono text-sm">{c.username}</TableCell>
+                  <TableCell className="text-gray-600 dark:text-gray-300 font-mono text-sm">{c.username}</TableCell>
                   <TableCell><span className="font-mono text-sm bg-gray-100 px-2 py-0.5 rounded text-gray-500">{"•".repeat(Math.min(c.password.length, 8))}</span></TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
@@ -109,7 +109,7 @@ export default function ClassesPage() {
               <Label htmlFor="class-password">Password</Label>
               <div className="relative">
                 <Input id="class-password" type={showPass ? "text" : "password"} value={form.password} onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))} placeholder="Masukkan password" />
-                <button type="button" className="absolute right-2 top-2.5 text-gray-400 hover:text-gray-600" onClick={() => setShowPass(!showPass)}>
+                <button type="button" className="absolute right-2 top-2.5 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200" onClick={() => setShowPass(!showPass)}>
                   {showPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
               </div>
@@ -139,7 +139,7 @@ export default function ClassesPage() {
       <Dialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
         <DialogContent aria-describedby={undefined}>
           <DialogHeader><DialogTitle>Hapus Akun Kelas</DialogTitle></DialogHeader>
-          <p className="text-sm text-gray-600">Hapus akun <strong>{deleteTarget?.name}</strong>? Tindakan ini tidak dapat dibatalkan.</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300">Hapus akun <strong>{deleteTarget?.name}</strong>? Tindakan ini tidak dapat dibatalkan.</p>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteTarget(null)}>Batal</Button>
             <Button variant="destructive" onClick={handleDelete}>Hapus</Button>

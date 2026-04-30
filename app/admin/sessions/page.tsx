@@ -24,7 +24,7 @@ const STATUS_CONFIG: Record<SessionStatus, { label: string; className: string; i
 const CONDITION_CONFIG: Record<ItemCondition, { label: string; className: string }> = {
   baik: { label: "Baik", className: "bg-green-100 text-green-700" },
   rusak: { label: "Rusak", className: "bg-red-100 text-red-700" },
-  hilang: { label: "Hilang", className: "bg-gray-100 text-gray-600" },
+  hilang: { label: "Hilang", className: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300" },
 };
 
 function fmt(dt: string | null) {
@@ -110,7 +110,7 @@ export default function SessionsPage() {
     <div className="p-8">
       <div className="mb-6 flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Log Sesi</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Log Sesi</h1>
           <p className="text-gray-500 text-sm mt-1">Riwayat penggunaan laboratorium oleh setiap kelas</p>
         </div>
         <Button
@@ -180,13 +180,13 @@ export default function SessionsPage() {
                 return (
                   <TableRow
                     key={s.id}
-                    className="cursor-pointer hover:bg-gray-50"
+                    className="cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800"
                     onClick={() => setDetailSession(s)}
                   >
                     <TableCell className="font-medium">{labMap[s.lab_id] ?? "-"}</TableCell>
-                    <TableCell className="text-gray-600">{classMap[s.class_id] ?? "-"}</TableCell>
-                    <TableCell className="text-sm text-gray-600">{fmt(s.started_at)}</TableCell>
-                    <TableCell className="text-sm text-gray-600">{fmt(s.ended_at)}</TableCell>
+                    <TableCell className="text-gray-600 dark:text-gray-300">{classMap[s.class_id] ?? "-"}</TableCell>
+                    <TableCell className="text-sm text-gray-600 dark:text-gray-300">{fmt(s.started_at)}</TableCell>
+                    <TableCell className="text-sm text-gray-600 dark:text-gray-300">{fmt(s.ended_at)}</TableCell>
                     <TableCell className="text-center">
                       <Badge className={`${cfg.className} flex items-center gap-1 w-fit mx-auto text-xs`}>
                         {cfg.icon}{cfg.label}
@@ -255,7 +255,7 @@ export default function SessionsPage() {
               </div>
 
               <div>
-                <p className="text-sm font-semibold text-gray-700 mb-2">Checklist Barang</p>
+                <p className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Checklist Barang</p>
                 {detailItems.length === 0 ? (
                   <p className="text-sm text-gray-400 py-4 text-center">Tidak ada data checklist untuk sesi ini.</p>
                 ) : (
@@ -276,7 +276,7 @@ export default function SessionsPage() {
                           <TableRow key={di.id}>
                             <TableCell className="font-medium">{di.item?.name ?? "-"}</TableCell>
                             <TableCell className="text-center">
-                              <span className={diff < 0 ? "text-red-600 font-semibold" : "text-gray-700"}>
+                              <span className={diff < 0 ? "text-red-600 dark:text-red-400 font-semibold" : "text-gray-700 dark:text-gray-200"}>
                                 {di.counted_quantity}
                                 {diff < 0 && <span className="text-xs ml-1">({diff})</span>}
                               </span>

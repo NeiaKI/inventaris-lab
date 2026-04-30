@@ -21,7 +21,7 @@ const dayColor: Record<DayOfWeek, string> = {
   Rabu:    "bg-green-100 text-green-700 border-green-200",
   Kamis:   "bg-yellow-100 text-yellow-700 border-yellow-200",
   Jumat:   "bg-orange-100 text-orange-700 border-orange-200",
-  Sabtu:   "bg-gray-100 text-gray-600 border-gray-200",
+  Sabtu:   "bg-gray-100 text-gray-600 border-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:border-gray-700",
 };
 
 const EMPTY_FORM = { lab_id: "", class_id: "", day_of_week: "" as DayOfWeek | "", start_time: "07:00", end_time: "09:00", subject: "" };

@@ -44,7 +44,7 @@ export default function AdminLoginPage() {
               <FlaskConical className="h-7 w-7" />
             </div>
           </div>
-          <CardTitle className="text-xl font-bold text-gray-800">Portal Admin</CardTitle>
+          <CardTitle className="text-xl font-bold text-gray-800 dark:text-gray-100">Portal Admin</CardTitle>
           <CardDescription>SMK Bintang Nusantara — Inventaris Lab</CardDescription>
           <div className="flex items-center justify-center gap-1.5 text-xs text-gray-400 pt-1">
             <ShieldCheck className="h-3.5 w-3.5" />

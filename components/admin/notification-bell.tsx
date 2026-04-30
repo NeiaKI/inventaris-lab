@@ -92,7 +92,7 @@ export function NotificationBell({ variant = "sidebar", onNotifSeen }: Props) {
   const iconCls =
     variant === "sidebar"
       ? "text-gray-300 hover:text-white hover:bg-gray-700"
-      : "text-gray-500 hover:text-gray-800 hover:bg-gray-100";
+      : "text-gray-500 hover:text-gray-800 hover:bg-gray-100 dark:text-gray-300 dark:hover:text-white dark:hover:bg-gray-800";
 
   return (
     <>
@@ -114,14 +114,14 @@ export function NotificationBell({ variant = "sidebar", onNotifSeen }: Props) {
         <div
           ref={dropRef}
           style={{ top: pos.top, left: pos.left, width: 304 }}
-          className="fixed z-[9999] rounded-xl shadow-xl border border-gray-100 bg-white overflow-hidden"
+          className="fixed z-[9999] rounded-xl shadow-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden"
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-100">
-            <span className="text-sm font-semibold text-gray-700">
+          <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-100 dark:border-gray-800">
+            <span className="text-sm font-semibold text-gray-700 dark:text-gray-100">
               Notifikasi
               {unreadCount > 0 && (
-                <span className="ml-2 text-xs font-medium text-gray-400">{unreadCount} belum dibaca</span>
+                <span className="ml-2 text-xs font-medium text-gray-400 dark:text-gray-500">{unreadCount} belum dibaca</span>
               )}
             </span>
             <div className="flex items-center gap-0.5">
@@ -129,14 +129,14 @@ export function NotificationBell({ variant = "sidebar", onNotifSeen }: Props) {
                 <button
                   onClick={handleMarkRead}
                   title="Tandai semua dibaca"
-                  className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                  className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950 transition-colors"
                 >
                   <CheckCheck className="h-4 w-4" />
                 </button>
               )}
               <button
                 onClick={() => setOpen(false)}
-                className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+                className="p-1.5 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 dark:hover:text-gray-200 dark:hover:bg-gray-800 transition-colors"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -146,7 +146,7 @@ export function NotificationBell({ variant = "sidebar", onNotifSeen }: Props) {
           {/* List */}
           <div className="max-h-[360px] overflow-y-auto">
             {items.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-10 gap-2 text-gray-300">
+              <div className="flex flex-col items-center justify-center py-10 gap-2 text-gray-300 dark:text-gray-600">
                 <Bell className="h-7 w-7" />
                 <p className="text-xs">Tidak ada peringatan</p>
               </div>
@@ -160,7 +160,7 @@ export function NotificationBell({ variant = "sidebar", onNotifSeen }: Props) {
                   return (
                     <div
                       key={`a-${a.id}`}
-                      className={`border-l-2 ${meta.border} px-4 py-3 hover:bg-gray-50 transition-colors ${unread ? "bg-gray-50/60" : "bg-white"}`}
+                      className={`border-l-2 ${meta.border} px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${unread ? "bg-gray-50/60 dark:bg-gray-800/70" : "bg-white dark:bg-gray-900"}`}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-center gap-1.5 flex-wrap">
@@ -169,9 +169,9 @@ export function NotificationBell({ variant = "sidebar", onNotifSeen }: Props) {
                           </span>
                           {unread && <span className={`inline-block w-1.5 h-1.5 rounded-full ${meta.dot}`} />}
                         </div>
-                        <span className="text-[10px] text-gray-400 whitespace-nowrap shrink-0">{timeAgo(a.created_at)}</span>
+                        <span className="text-[10px] text-gray-400 dark:text-gray-500 whitespace-nowrap shrink-0">{timeAgo(a.created_at)}</span>
                       </div>
-                      <p className="text-xs text-gray-600 mt-0.5 leading-relaxed line-clamp-2">{a.message}</p>
+                      <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5 leading-relaxed line-clamp-2">{a.message}</p>
                     </div>
                   );
                 } else {
@@ -180,7 +180,7 @@ export function NotificationBell({ variant = "sidebar", onNotifSeen }: Props) {
                   return (
                     <div
                       key={`l-${r.id}`}
-                      className={`border-l-2 ${meta.border} px-4 py-3 hover:bg-gray-50 transition-colors ${unread ? "bg-gray-50/60" : "bg-white"}`}
+                      className={`border-l-2 ${meta.border} px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${unread ? "bg-gray-50/60 dark:bg-gray-800/70" : "bg-white dark:bg-gray-900"}`}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-center gap-1.5">
@@ -189,10 +189,10 @@ export function NotificationBell({ variant = "sidebar", onNotifSeen }: Props) {
                           </span>
                           {unread && <span className={`inline-block w-1.5 h-1.5 rounded-full ${meta.dot}`} />}
                         </div>
-                        <span className="text-[10px] text-gray-400 whitespace-nowrap shrink-0">{timeAgo(r.created_at)}</span>
+                        <span className="text-[10px] text-gray-400 dark:text-gray-500 whitespace-nowrap shrink-0">{timeAgo(r.created_at)}</span>
                       </div>
                       {r.description && (
-                        <p className="text-xs text-gray-600 mt-0.5 leading-relaxed line-clamp-2">{r.description}</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5 leading-relaxed line-clamp-2">{r.description}</p>
                       )}
                     </div>
                   );
@@ -202,8 +202,8 @@ export function NotificationBell({ variant = "sidebar", onNotifSeen }: Props) {
           </div>
 
           {items.length > 10 && (
-            <div className="px-4 py-2 border-t border-gray-100 text-center">
-              <p className="text-[11px] text-gray-400">+{items.length - 10} lainnya di Dashboard</p>
+            <div className="px-4 py-2 border-t border-gray-100 dark:border-gray-800 text-center">
+              <p className="text-[11px] text-gray-400 dark:text-gray-500">+{items.length - 10} lainnya di Dashboard</p>
             </div>
           )}
         </div>

@@ -149,7 +149,7 @@ export default function ItemsPage() {
     <div className="p-6 lg:p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Master Barang</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Master Barang</h1>
           <p className="text-gray-500 text-sm mt-1">Kelola inventaris aset di setiap laboratorium</p>
         </div>
         <div className="flex gap-2">
@@ -164,7 +164,7 @@ export default function ItemsPage() {
       </div>
 
       <div className="flex items-center gap-3 mb-4">
-        <Label className="text-sm text-gray-600 whitespace-nowrap">Filter Lab:</Label>
+        <Label className="text-sm text-gray-600 dark:text-gray-300 whitespace-nowrap">Filter Lab:</Label>
         <Select value={filterLab} onValueChange={(v) => setFilterLab(v ?? "all")}>
           <SelectTrigger className="w-48"><SelectValue placeholder="Semua Lab" /></SelectTrigger>
           <SelectContent>
@@ -199,10 +199,10 @@ export default function ItemsPage() {
                   <TableRow key={item.id}>
                     <TableCell className="font-medium">{item.name}</TableCell>
                     <TableCell><Badge variant="outline">{item.category}</Badge></TableCell>
-                    <TableCell className="text-gray-600 text-sm">{labMap[item.lab_id] ?? "-"}</TableCell>
+                    <TableCell className="text-gray-600 dark:text-gray-300 text-sm">{labMap[item.lab_id] ?? "-"}</TableCell>
                     <TableCell className="text-center">{item.initial_quantity}</TableCell>
                     <TableCell className="text-center">
-                      <span className={hasIssue ? (isCritical ? "text-red-700 font-bold" : "text-red-600 font-semibold") : "text-gray-700"}>
+                      <span className={hasIssue ? (isCritical ? "text-red-700 dark:text-red-300 font-bold" : "text-red-600 dark:text-red-400 font-semibold") : "text-gray-700 dark:text-gray-200"}>
                         {item.functional_quantity}
                       </span>
                     </TableCell>
@@ -311,7 +311,7 @@ export default function ItemsPage() {
       <Dialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
         <DialogContent aria-describedby={undefined}>
           <DialogHeader><DialogTitle>Hapus Barang</DialogTitle></DialogHeader>
-          <p className="text-sm text-gray-600">Hapus <strong>{deleteTarget?.name}</strong>? Tindakan ini tidak dapat dibatalkan.</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300">Hapus <strong>{deleteTarget?.name}</strong>? Tindakan ini tidak dapat dibatalkan.</p>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteTarget(null)}>Batal</Button>
             <Button variant="destructive" onClick={handleDelete}>Hapus</Button>
@@ -323,7 +323,7 @@ export default function ItemsPage() {
       <Dialog open={!!restoreTarget} onOpenChange={() => setRestoreTarget(null)}>
         <DialogContent aria-describedby={undefined}>
           <DialogHeader><DialogTitle>Pulihkan Barang?</DialogTitle></DialogHeader>
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-gray-600 dark:text-gray-300">
             Jumlah berfungsi <strong>{restoreTarget?.name}</strong> akan dikembalikan dari{" "}
             <strong>{restoreTarget?.functional_quantity}</strong> → <strong>{restoreTarget?.initial_quantity}</strong> unit.
           </p>
@@ -363,17 +363,17 @@ export default function ItemsPage() {
                     const conditionConfig: Record<string, { label: string; className: string }> = {
                       baik: { label: "✅ Baik", className: "bg-green-100 text-green-700" },
                       rusak: { label: "⚠️ Rusak", className: "bg-red-100 text-red-700" },
-                      hilang: { label: "❌ Hilang", className: "bg-gray-100 text-gray-600" },
+                      hilang: { label: "❌ Hilang", className: "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300" },
                     };
                     const cond = conditionConfig[status.condition] ?? { label: status.condition, className: "" };
                     return (
                       <TableRow key={status.id}>
-                        <TableCell className="text-sm text-gray-600">
+                        <TableCell className="text-sm text-gray-600 dark:text-gray-300">
                           {session ? fmtDt(session.started_at) : "-"}
                         </TableCell>
                         <TableCell className="font-medium">{className}</TableCell>
                         <TableCell className="text-center">
-                          <span className={status.counted_quantity < (historyItem?.initial_quantity ?? 0) ? "text-red-600 font-semibold" : "text-gray-700"}>
+                          <span className={status.counted_quantity < (historyItem?.initial_quantity ?? 0) ? "text-red-600 dark:text-red-400 font-semibold" : "text-gray-700 dark:text-gray-200"}>
                             {status.counted_quantity}
                           </span>
                         </TableCell>
@@ -427,7 +427,7 @@ export default function ItemsPage() {
 
             {importRows.length > 0 && (
               <div className="space-y-2">
-                <p className="text-sm font-medium text-gray-700">{importRows.length} barang siap diimpor:</p>
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-200">{importRows.length} barang siap diimpor:</p>
                 <div className="max-h-48 overflow-y-auto border border-gray-200 rounded-lg">
                   <Table>
                     <TableHeader>

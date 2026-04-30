@@ -48,7 +48,7 @@ function QRModal({ lab, onClose }: { lab: Lab; onClose: () => void }) {
           </DialogTitle>
         </DialogHeader>
         <div className="flex flex-col items-center gap-4 py-2">
-          <div className="p-4 bg-white border border-gray-200 rounded-xl shadow-sm">
+          <div className="p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-sm">
             <canvas ref={canvasRef} />
           </div>
           <p className="text-xs text-gray-400 text-center break-all max-w-xs">{url}</p>
@@ -100,7 +100,7 @@ export default function LabsPage() {
     <div className="p-6 lg:p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Laboratorium</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Laboratorium</h1>
           <p className="text-gray-500 text-sm mt-1">Kelola daftar ruang laboratorium komputer</p>
         </div>
         <Button onClick={openCreate} className="bg-blue-600 hover:bg-blue-700">
@@ -133,7 +133,7 @@ export default function LabsPage() {
                       <span className="font-medium">{lab.name}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-gray-600">{lab.location || "-"}</TableCell>
+                  <TableCell className="text-gray-600 dark:text-gray-300">{lab.location || "-"}</TableCell>
                   <TableCell><Badge variant="secondary" className="text-xs">{lab.created_at}</Badge></TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
@@ -176,7 +176,7 @@ export default function LabsPage() {
       <Dialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
         <DialogContent aria-describedby={undefined}>
           <DialogHeader><DialogTitle>Hapus Lab</DialogTitle></DialogHeader>
-          <p className="text-sm text-gray-600">Hapus <strong>{deleteTarget?.name}</strong>? Tindakan ini tidak dapat dibatalkan.</p>
+          <p className="text-sm text-gray-600 dark:text-gray-300">Hapus <strong>{deleteTarget?.name}</strong>? Tindakan ini tidak dapat dibatalkan.</p>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteTarget(null)}>Batal</Button>
             <Button variant="destructive" onClick={handleDelete}>Hapus</Button>
