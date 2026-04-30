@@ -54,7 +54,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (status === "unauthed") return <>{children}</>;
 
   return (
-    <div className="flex h-screen overflow-hidden bg-gray-50">
+    <div className="flex h-screen overflow-hidden bg-gray-50 dark:bg-gray-950">
       {/* Mobile overlay */}
       {sidebarOpen && (
         <div
@@ -67,19 +67,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       <div className="flex-1 flex flex-col min-w-0">
         {/* Mobile top bar */}
-        <header className="lg:hidden flex items-center gap-3 px-4 py-3 bg-white border-b border-gray-200 sticky top-0 z-20">
+        <header className="lg:hidden flex items-center gap-3 px-4 py-3 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-20">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600"
+            className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300"
             aria-label="Buka menu"
           >
             <Menu className="h-5 w-5" />
           </button>
-          <span className="flex-1 font-semibold text-gray-800 text-sm">Inventaris Lab</span>
+          <span className="flex-1 font-semibold text-gray-800 dark:text-gray-100 text-sm">Inventaris Lab</span>
           <NotificationBell variant="header" />
           <button
             onClick={handleLogout}
-            className="p-1.5 rounded-lg hover:bg-gray-100 text-gray-600"
+            className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300"
             aria-label="Keluar"
           >
             <LogOut className="h-5 w-5" />

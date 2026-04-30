@@ -59,14 +59,14 @@ export default function DashboardPage() {
     { label: "Total Barang", value: items.length, icon: Package, color: "text-green-600 bg-green-50", href: "/admin/items" },
     { label: "Akun Kelas", value: classes.length, icon: Users, color: "text-purple-600 bg-purple-50", href: "/admin/classes" },
     { label: "Barang Bermasalah", value: brokenItems.length, icon: TriangleAlert, color: "text-orange-600 bg-orange-50", href: "/admin/items" },
-    { label: "Laporan Hilang Baru", value: newLostReports.length, icon: AlertTriangle, color: newLostReports.length > 0 ? "text-red-600 bg-red-50" : "text-gray-400 bg-gray-50", href: "/admin/lost-reports" },
+    { label: "Laporan Hilang Baru", value: newLostReports.length, icon: AlertTriangle, color: newLostReports.length > 0 ? "text-red-600 bg-red-50" : "text-gray-400 bg-gray-50 dark:text-gray-500", href: "/admin/lost-reports" },
   ];
 
   return (
     <div className="p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-500 text-sm mt-1">Ringkasan kondisi laboratorium komputer</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-50">Dashboard</h1>
+        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Ringkasan kondisi laboratorium komputer</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5 mb-8">
@@ -76,8 +76,8 @@ export default function DashboardPage() {
               <CardContent className="p-5 flex items-center gap-4">
                 <div className={`p-3 rounded-xl ${color}`}><Icon className="h-5 w-5" /></div>
                 <div>
-                  <p className="text-sm text-gray-500">{label}</p>
-                  <p className={`text-2xl font-bold ${label === "Laporan Hilang Baru" && value > 0 ? "text-red-600" : "text-gray-900"}`}>{value}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
+                  <p className={`text-2xl font-bold ${label === "Laporan Hilang Baru" && value > 0 ? "text-red-600" : "text-gray-900 dark:text-gray-50"}`}>{value}</p>
                 </div>
               </CardContent>
             </Card>
@@ -106,8 +106,8 @@ export default function DashboardPage() {
                 {activeSessions.map((s) => (
                   <div key={s.id} className="flex justify-between items-start p-3 bg-blue-50 rounded-lg border border-blue-100">
                     <div>
-                      <p className="font-medium text-sm">{labMap[s.lab_id] ?? "-"}</p>
-                      <p className="text-xs text-gray-500">{classMap[s.class_id] ?? "-"}</p>
+                      <p className="font-medium text-sm dark:text-gray-100">{labMap[s.lab_id] ?? "-"}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">{classMap[s.class_id] ?? "-"}</p>
                     </div>
                     <div className="text-right">
                       <Badge className="bg-blue-600 text-white text-xs">Aktif</Badge>
@@ -171,11 +171,11 @@ export default function DashboardPage() {
                       >
                         <TriangleAlert className={`h-4 w-4 shrink-0 mt-0.5 ${isSelisih ? "text-orange-500" : "text-red-500"}`} />
                         <div className="flex-1 min-w-0">
-                          <p className={`text-xs font-semibold ${isSelisih ? "text-orange-700" : "text-red-700"}`}>
+                          <p className={`text-xs font-semibold ${isSelisih ? "text-orange-700 dark:text-orange-400" : "text-red-700 dark:text-red-400"}`}>
                             {isSelisih ? "Selisih Barang" : "Barang Rusak"}
                             <span className="font-normal ml-1">· {itemMap[a.lab_item_id] ?? "-"}</span>
                           </p>
-                          <p className="text-xs text-gray-600 mt-0.5 line-clamp-2">{a.message}</p>
+                          <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5 line-clamp-2">{a.message}</p>
                           <p className={`text-xs mt-1 ${isSelisih ? "text-orange-400" : "text-red-400"}`}>{fmt(a.created_at)}</p>
                         </div>
                         <button

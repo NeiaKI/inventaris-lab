@@ -43,24 +43,25 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
         "fixed top-0 left-0 h-full z-40 transition-transform duration-300 ease-in-out",
         "lg:static lg:translate-x-0 lg:transition-none lg:z-auto",
         isOpen ? "translate-x-0" : "-translate-x-full",
-        "flex flex-col w-64 min-h-screen bg-gray-900 text-white"
+        "flex flex-col w-64 min-h-screen text-white"
       )}
+      style={{ backgroundColor: "#111827" }}
     >
-      <div className="flex items-center justify-between px-6 py-5 border-b border-gray-700">
+      <div className="flex items-center justify-between px-6 py-5" style={{ borderBottom: "1px solid #374151" }}>
         <div className="flex items-center gap-3">
           <div className="bg-blue-500 p-1.5 rounded-lg">
             <FlaskConical className="h-5 w-5" />
           </div>
           <div className="leading-tight">
             <p className="font-semibold text-sm">Inventaris Lab</p>
-            <p className="text-xs text-gray-400">SMK Bintang Nusantara</p>
+            <p className="text-xs" style={{ color: "#9ca3af" }}>SMK Bintang Nusantara</p>
           </div>
         </div>
         <div className="flex items-center gap-1">
           <NotificationBell variant="sidebar" />
           {/* Close button — mobile only */}
           {onClose && (
-            <button onClick={onClose} className="lg:hidden p-1 rounded hover:bg-gray-700 text-gray-400" aria-label="Tutup menu">
+            <button onClick={onClose} className="lg:hidden p-1 rounded" style={{ color: "#9ca3af" }} aria-label="Tutup menu">
               <X className="h-4 w-4" />
             </button>
           )}
@@ -74,8 +75,11 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
             href={href}
             className={cn(
               "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-              pathname === href ? "bg-blue-600 text-white" : "text-gray-300 hover:bg-gray-800 hover:text-white"
+              pathname === href ? "bg-blue-600 text-white" : "text-[#d1d5db] hover:text-white"
             )}
+            style={pathname !== href ? undefined : undefined}
+            onMouseEnter={(e) => { if (pathname !== href) (e.currentTarget as HTMLElement).style.backgroundColor = "#1f2937"; }}
+            onMouseLeave={(e) => { if (pathname !== href) (e.currentTarget as HTMLElement).style.backgroundColor = ""; }}
           >
             <Icon className="h-4 w-4 shrink-0" />
             <span className="flex-1">{label}</span>
@@ -88,15 +92,15 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
         ))}
       </nav>
 
-      <div className="p-4 border-t border-gray-700">
+      <div className="p-4" style={{ borderTop: "1px solid #374151" }}>
         <div className="flex items-center gap-3 mb-3 px-2">
           <div className="bg-blue-600 rounded-full h-8 w-8 flex items-center justify-center text-xs font-bold">A</div>
           <div className="text-sm">
             <p className="font-medium">Admin</p>
-            <p className="text-xs text-gray-400">Kepala Laboratorium</p>
+            <p className="text-xs" style={{ color: "#9ca3af" }}>Kepala Laboratorium</p>
           </div>
         </div>
-        <Button variant="ghost" size="sm" className="w-full justify-start text-gray-400 hover:text-white hover:bg-gray-800" onClick={handleLogout}>
+        <Button variant="ghost" size="sm" className="w-full justify-start hover:text-white" style={{ color: "#9ca3af" }} onClick={handleLogout}>
           <LogOut className="h-4 w-4 mr-2" />
           Keluar
         </Button>

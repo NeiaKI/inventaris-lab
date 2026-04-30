@@ -48,39 +48,119 @@ export default function SettingsPage() {
   return (
     <div className="p-6 lg:p-8 max-w-xl">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Pengaturan</h1>
-        <p className="text-gray-500 text-sm mt-1">Kelola keamanan akun dan data sistem</p>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-50">Pengaturan</h1>
+        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Kelola keamanan akun dan data sistem</p>
       </div>
 
       <Card className="mb-6">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base flex items-center gap-2">
+          <CardTitle className="text-base flex items-center gap-2 dark:text-gray-100">
             <Monitor className="h-4 w-4 text-purple-500" />
             Tampilan
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">Pilih tema antarmuka admin</p>
-          <div className="flex gap-2">
-            {[
-              { value: "light", label: "Terang", icon: Sun },
-              { value: "dark", label: "Gelap", icon: Moon },
-              { value: "system", label: "Sistem", icon: Monitor },
-            ].map(({ value, label, icon: Icon }) => (
-              <button
-                key={value}
-                onClick={() => setTheme(value)}
-                className={`flex-1 flex flex-col items-center gap-1.5 px-3 py-3 rounded-lg border text-sm font-medium transition-colors ${
-                  theme === value
-                    ? "border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
-                    : "border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800"
-                }`}
-              >
-                <Icon className="h-4 w-4" />
-                {label}
-              </button>
-            ))}
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Pilih tema antarmuka admin</p>
+          <div className="grid grid-cols-3 gap-3">
+            {/* Light mode */}
+            <button
+              onClick={() => setTheme("light")}
+              className={`rounded-xl border-2 overflow-hidden transition-all ${theme === "light" ? "border-blue-500 shadow-md" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`}
+            >
+              {/* Preview */}
+              <div className="bg-gray-100 p-2">
+                <div className="bg-white rounded-lg p-2 space-y-1.5 shadow-sm">
+                  <div className="flex gap-1.5">
+                    <div className="w-4 h-4 rounded bg-gray-800" />
+                    <div className="flex-1 space-y-1">
+                      <div className="h-1.5 rounded bg-gray-300 w-3/4" />
+                      <div className="h-1 rounded bg-gray-200 w-1/2" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1">
+                    <div className="h-4 rounded bg-blue-100" />
+                    <div className="h-4 rounded bg-green-100" />
+                    <div className="h-4 rounded bg-purple-100" />
+                  </div>
+                </div>
+              </div>
+              {/* Label */}
+              <div className={`px-3 py-2 flex items-center justify-between ${theme === "light" ? "bg-blue-50 dark:bg-blue-950" : "bg-white dark:bg-gray-800"}`}>
+                <div className="flex items-center gap-1.5">
+                  <Sun className={`h-3.5 w-3.5 ${theme === "light" ? "text-blue-600" : "text-gray-500 dark:text-gray-400"}`} />
+                  <span className={`text-sm font-medium ${theme === "light" ? "text-blue-700 dark:text-blue-300" : "text-gray-600 dark:text-gray-300"}`}>Terang</span>
+                </div>
+                {theme === "light" && <div className="h-2 w-2 rounded-full bg-blue-500" />}
+              </div>
+            </button>
+
+            {/* Dark mode */}
+            <button
+              onClick={() => setTheme("dark")}
+              className={`rounded-xl border-2 overflow-hidden transition-all ${theme === "dark" ? "border-blue-500 shadow-md" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`}
+            >
+              {/* Preview */}
+              <div className="bg-gray-900 p-2">
+                <div className="bg-gray-800 rounded-lg p-2 space-y-1.5 shadow-sm">
+                  <div className="flex gap-1.5">
+                    <div className="w-4 h-4 rounded bg-gray-100" />
+                    <div className="flex-1 space-y-1">
+                      <div className="h-1.5 rounded bg-gray-500 w-3/4" />
+                      <div className="h-1 rounded bg-gray-600 w-1/2" />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1">
+                    <div className="h-4 rounded bg-blue-900" />
+                    <div className="h-4 rounded bg-green-900" />
+                    <div className="h-4 rounded bg-purple-900" />
+                  </div>
+                </div>
+              </div>
+              {/* Label */}
+              <div className={`px-3 py-2 flex items-center justify-between ${theme === "dark" ? "bg-blue-50 dark:bg-blue-950" : "bg-white dark:bg-gray-800"}`}>
+                <div className="flex items-center gap-1.5">
+                  <Moon className={`h-3.5 w-3.5 ${theme === "dark" ? "text-blue-600 dark:text-blue-400" : "text-gray-500 dark:text-gray-400"}`} />
+                  <span className={`text-sm font-medium ${theme === "dark" ? "text-blue-700 dark:text-blue-300" : "text-gray-600 dark:text-gray-300"}`}>Gelap</span>
+                </div>
+                {theme === "dark" && <div className="h-2 w-2 rounded-full bg-blue-500" />}
+              </div>
+            </button>
+
+            {/* System */}
+            <button
+              onClick={() => setTheme("system")}
+              className={`rounded-xl border-2 overflow-hidden transition-all ${theme === "system" ? "border-blue-500 shadow-md" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`}
+            >
+              {/* Preview — split half light / half dark */}
+              <div className="p-2" style={{ background: "linear-gradient(135deg, #f3f4f6 50%, #111827 50%)" }}>
+                <div className="rounded-lg p-2 space-y-1.5" style={{ background: "linear-gradient(135deg, #ffffff 50%, #1f2937 50%)" }}>
+                  <div className="flex gap-1.5">
+                    <div className="w-4 h-4 rounded" style={{ background: "linear-gradient(135deg, #374151 50%, #e5e7eb 50%)" }} />
+                    <div className="flex-1 space-y-1">
+                      <div className="h-1.5 rounded w-3/4" style={{ background: "linear-gradient(135deg, #d1d5db 50%, #4b5563 50%)" }} />
+                      <div className="h-1 rounded w-1/2" style={{ background: "linear-gradient(135deg, #e5e7eb 50%, #374151 50%)" }} />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-3 gap-1">
+                    <div className="h-4 rounded" style={{ background: "linear-gradient(135deg, #dbeafe 50%, #1e3a5f 50%)" }} />
+                    <div className="h-4 rounded" style={{ background: "linear-gradient(135deg, #dcfce7 50%, #14532d 50%)" }} />
+                    <div className="h-4 rounded" style={{ background: "linear-gradient(135deg, #f3e8ff 50%, #3b0764 50%)" }} />
+                  </div>
+                </div>
+              </div>
+              {/* Label */}
+              <div className={`px-3 py-2 flex items-center justify-between ${theme === "system" ? "bg-blue-50 dark:bg-blue-950" : "bg-white dark:bg-gray-800"}`}>
+                <div className="flex items-center gap-1.5">
+                  <Monitor className={`h-3.5 w-3.5 ${theme === "system" ? "text-blue-600 dark:text-blue-400" : "text-gray-500 dark:text-gray-400"}`} />
+                  <span className={`text-sm font-medium ${theme === "system" ? "text-blue-700 dark:text-blue-300" : "text-gray-600 dark:text-gray-300"}`}>Sistem</span>
+                </div>
+                {theme === "system" && <div className="h-2 w-2 rounded-full bg-blue-500" />}
+              </div>
+            </button>
           </div>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">
+            {theme === "system" ? "Mengikuti pengaturan sistem operasi perangkat." : theme === "dark" ? "Tema gelap aktif." : "Tema terang aktif."}
+          </p>
         </CardContent>
       </Card>
 
