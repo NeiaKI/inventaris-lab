@@ -104,14 +104,14 @@ export default function DashboardPage() {
             ) : (
               <div className="space-y-3">
                 {activeSessions.map((s) => (
-                  <div key={s.id} className="flex justify-between items-start p-3 bg-blue-50 dark:bg-blue-950/50 rounded-lg border border-blue-100 dark:border-blue-900">
+                  <div key={s.id} className="flex justify-between items-start p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-100 dark:border-blue-800">
                     <div>
-                      <p className="font-medium text-sm">{labMap[s.lab_id] ?? "-"}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">{classMap[s.class_id] ?? "-"}</p>
+                      <p className="font-medium text-sm text-gray-800 dark:text-blue-100">{labMap[s.lab_id] ?? "-"}</p>
+                      <p className="text-xs text-gray-500 dark:text-blue-200/70">{classMap[s.class_id] ?? "-"}</p>
                     </div>
                     <div className="text-right">
                       <Badge className="bg-blue-600 text-white text-xs">Aktif</Badge>
-                      <p className="text-xs text-gray-400 mt-1">{fmt(s.started_at)}</p>
+                      <p className="text-xs text-gray-400 dark:text-blue-200/60 mt-1">{fmt(s.started_at)}</p>
                     </div>
                   </div>
                 ))}
@@ -167,20 +167,20 @@ export default function DashboardPage() {
                     return (
                       <div
                         key={a.id}
-                        className={`flex items-start gap-3 p-3 rounded-lg border ${isSelisih ? "bg-orange-50 dark:bg-orange-950/50 border-orange-100 dark:border-orange-900" : "bg-red-50 dark:bg-red-950/50 border-red-100 dark:border-red-900"}`}
+                        className={`flex items-start gap-3 p-3 rounded-lg border ${isSelisih ? "bg-orange-50 dark:bg-orange-900/30 border-orange-100 dark:border-orange-800" : "bg-red-50 dark:bg-red-900/30 border-red-100 dark:border-red-800"}`}
                       >
-                        <TriangleAlert className={`h-4 w-4 shrink-0 mt-0.5 ${isSelisih ? "text-orange-500" : "text-red-500"}`} />
+                        <TriangleAlert className={`h-4 w-4 shrink-0 mt-0.5 ${isSelisih ? "text-orange-500 dark:text-orange-400" : "text-red-500 dark:text-red-400"}`} />
                         <div className="flex-1 min-w-0">
-                          <p className={`text-xs font-semibold ${isSelisih ? "text-orange-700 dark:text-orange-400" : "text-red-700 dark:text-red-400"}`}>
+                          <p className={`text-xs font-semibold ${isSelisih ? "text-orange-700 dark:text-orange-200" : "text-red-700 dark:text-red-200"}`}>
                             {isSelisih ? "Selisih Barang" : "Barang Rusak"}
                             <span className="font-normal ml-1">· {itemMap[a.lab_item_id] ?? "-"}</span>
                           </p>
-                          <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5 line-clamp-2">{a.message}</p>
-                          <p className={`text-xs mt-1 ${isSelisih ? "text-orange-400" : "text-red-400"}`}>{fmt(a.created_at)}</p>
+                          <p className="text-xs text-gray-600 dark:text-gray-200 mt-0.5 line-clamp-2">{a.message}</p>
+                          <p className={`text-xs mt-1 ${isSelisih ? "text-orange-500 dark:text-orange-300" : "text-red-500 dark:text-red-300"}`}>{fmt(a.created_at)}</p>
                         </div>
                         <button
                           onClick={() => resolveAlert(a.id)}
-                          className="p-1 rounded-md hover:bg-white/70 text-gray-400 hover:text-gray-600 transition-colors shrink-0"
+                          className="p-1 rounded-md hover:bg-white/10 text-gray-400 dark:text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors shrink-0"
                           title="Selesaikan"
                         >
                           <X className="h-3.5 w-3.5" />
@@ -190,8 +190,8 @@ export default function DashboardPage() {
                   })}
                 </div>
                 {alerts.length > 5 && (
-                  <p className="text-xs text-gray-400 text-center mt-3 pt-3 border-t border-gray-100">
-                    dan <span className="font-medium text-gray-600">{alerts.length - 5} peringatan lainnya</span> — gunakan "Selesaikan Semua" untuk membersihkan
+                  <p className="text-xs text-gray-400 dark:text-gray-500 text-center mt-3 pt-3 border-t border-gray-100 dark:border-gray-700">
+                    dan <span className="font-medium text-gray-600 dark:text-gray-300">{alerts.length - 5} peringatan lainnya</span> — gunakan "Selesaikan Semua" untuk membersihkan
                   </p>
                 )}
               </>
@@ -221,14 +221,14 @@ export default function DashboardPage() {
             ) : (
               <div className="space-y-3 max-h-64 overflow-y-auto">
                 {newLostReports.slice().reverse().slice(0, 5).map((r) => (
-                  <div key={r.id} className="p-3 bg-red-50 dark:bg-red-950/50 rounded-lg border border-red-100 dark:border-red-900">
+                  <div key={r.id} className="p-3 bg-red-50 dark:bg-red-900/30 rounded-lg border border-red-100 dark:border-red-800">
                     <div className="flex justify-between items-start">
-                      <p className="font-medium text-sm text-red-700">{itemMap[r.lab_item_id] ?? "-"}</p>
+                      <p className="font-medium text-sm text-red-700 dark:text-red-200">{itemMap[r.lab_item_id] ?? "-"}</p>
                       <Badge className="bg-red-100 text-red-600 text-xs border-red-200">Baru</Badge>
                     </div>
-                    <p className="text-xs text-gray-500 mt-0.5">{classMap[r.class_id] ?? "-"}</p>
-                    {r.description && <p className="text-xs text-gray-600 mt-1 truncate">{r.description}</p>}
-                    <p className="text-xs text-gray-400 mt-1">{fmt(r.created_at)}</p>
+                    <p className="text-xs text-gray-500 dark:text-red-200/70 mt-0.5">{classMap[r.class_id] ?? "-"}</p>
+                    {r.description && <p className="text-xs text-gray-600 dark:text-gray-300 mt-1 truncate">{r.description}</p>}
+                    <p className="text-xs text-gray-400 dark:text-red-300/70 mt-1">{fmt(r.created_at)}</p>
                   </div>
                 ))}
                 {newLostReports.length > 5 && (
