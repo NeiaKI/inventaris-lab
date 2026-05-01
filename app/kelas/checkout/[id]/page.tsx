@@ -77,12 +77,12 @@ export default function CheckoutPage() {
     const isForceEnded = session.status === "pending";
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-6">
-        <div className={`p-4 rounded-full mb-4 ${isForceEnded ? "bg-yellow-100" : "bg-gray-100"}`}>
+        <div className={`p-4 rounded-full mb-4 ${isForceEnded ? "bg-yellow-100 dark:bg-yellow-900/40" : "bg-gray-100 dark:bg-gray-700"}`}>
           {isForceEnded
             ? <span className="text-3xl">🔒</span>
             : <span className="text-3xl">✅</span>}
         </div>
-        <p className="font-semibold text-gray-700">
+        <p className="font-semibold text-gray-700 dark:text-gray-300">
           {isForceEnded ? "Sesi diakhiri oleh Admin" : "Sesi sudah selesai"}
         </p>
         <p className="text-sm text-gray-400 mt-1">
@@ -184,8 +184,8 @@ export default function CheckoutPage() {
       </div>
     <div className="max-w-2xl mx-auto p-6">
       <div className="mb-6">
-        <h1 className="text-xl font-bold text-gray-900">Checklist Akhir Sesi</h1>
-        <p className="text-gray-500 text-sm mt-1">{lab?.name} — Isi jumlah aktual dan kondisi setiap barang</p>
+        <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">Checklist Akhir Sesi</h1>
+        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">{lab?.name} — Isi jumlah aktual dan kondisi setiap barang</p>
       </div>
 
       <Card className="mb-4">
@@ -194,13 +194,13 @@ export default function CheckoutPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           {checklist.map((row, idx) => (
-            <div key={row.lab_item_id} className="border rounded-lg p-4 bg-gray-50">
+            <div key={row.lab_item_id} className="border dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-800/60">
               <div className="flex items-center justify-between mb-3">
                 <p className="font-medium text-sm">{row.name}</p>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <Label htmlFor={`counted-qty-${idx}`} className="text-xs text-gray-500">Jumlah Aktual</Label>
+                  <Label htmlFor={`counted-qty-${idx}`} className="text-xs text-gray-500 dark:text-gray-400">Jumlah Aktual</Label>
                   <Input
                     id={`counted-qty-${idx}`}
                     type="text"
@@ -214,13 +214,13 @@ export default function CheckoutPage() {
                     }}
                     className={row.counted_quantity < row.initial_quantity ? "border-red-300 bg-red-50" : ""}
                   />
-                  <p className="text-xs text-gray-400">Maks: {row.initial_quantity} unit</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500">Maks: {row.initial_quantity} unit</p>
                   {row.counted_quantity < row.initial_quantity && (
                     <p className="text-xs text-red-500 flex items-center gap-1"><TriangleAlert className="h-3 w-3" />Kurang {row.initial_quantity - row.counted_quantity} unit</p>
                   )}
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor={`condition-${idx}`} className="text-xs text-gray-500">Kondisi</Label>
+                  <Label htmlFor={`condition-${idx}`} className="text-xs text-gray-500 dark:text-gray-400">Kondisi</Label>
                   <Select value={row.condition} onValueChange={(v) => updateRow(idx, "condition", v ?? "baik")}>
                     <SelectTrigger id={`condition-${idx}`} className={row.condition !== "baik" ? "border-red-300 bg-red-50" : ""}><SelectValue /></SelectTrigger>
                     <SelectContent>

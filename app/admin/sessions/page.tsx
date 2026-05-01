@@ -111,7 +111,7 @@ export default function SessionsPage() {
       <div className="mb-6 flex items-start justify-between gap-4 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Log Sesi</h1>
-          <p className="text-gray-500 text-sm mt-1">Riwayat penggunaan laboratorium oleh setiap kelas</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Riwayat penggunaan laboratorium oleh setiap kelas</p>
         </div>
         <Button
           variant="outline"
@@ -147,14 +147,14 @@ export default function SessionsPage() {
           </SelectContent>
         </Select>
         <div className="flex items-center gap-2">
-          <Label className="text-xs text-gray-500 whitespace-nowrap">Dari</Label>
+          <Label className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">Dari</Label>
           <Input type="date" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} className="w-36 text-sm" />
-          <Label className="text-xs text-gray-500 whitespace-nowrap">s/d</Label>
+          <Label className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">s/d</Label>
           <Input type="date" value={dateTo} onChange={(e) => setDateTo(e.target.value)} className="w-36 text-sm" />
         </div>
       </div>
 
-      <p className="text-xs text-gray-400 mb-3">{filtered.length} sesi ditemukan · klik baris untuk lihat detail</p>
+      <p className="text-xs text-gray-400 dark:text-gray-500 mb-3">{filtered.length} sesi ditemukan · klik baris untuk lihat detail</p>
 
       <Card>
         <CardContent className="p-0">
@@ -226,24 +226,24 @@ export default function SessionsPage() {
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <p className="text-gray-500 text-xs mb-1">Lab</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-xs mb-1">Lab</p>
                   <p className="font-semibold">{labMap[detailSession.lab_id] ?? "-"}</p>
                 </div>
                 <div>
-                  <p className="text-gray-500 text-xs mb-1">Kelas</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-xs mb-1">Kelas</p>
                   <p className="font-semibold">{classMap[detailSession.class_id] ?? "-"}</p>
                 </div>
                 <div>
-                  <p className="text-gray-500 text-xs mb-1">Mulai</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-xs mb-1">Mulai</p>
                   <p>{fmt(detailSession.started_at)}</p>
                 </div>
                 <div>
-                  <p className="text-gray-500 text-xs mb-1">Akhir</p>
+                  <p className="text-gray-500 dark:text-gray-400 text-xs mb-1">Akhir</p>
                   <p>{fmt(detailSession.ended_at)}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <p className="text-xs text-gray-500">Status:</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Status:</p>
                 {(() => {
                   const cfg = STATUS_CONFIG[detailSession.status];
                   return (
@@ -257,7 +257,7 @@ export default function SessionsPage() {
               <div>
                 <p className="text-sm font-semibold text-gray-700 dark:text-gray-200 mb-2">Checklist Barang</p>
                 {detailItems.length === 0 ? (
-                  <p className="text-sm text-gray-400 py-4 text-center">Tidak ada data checklist untuk sesi ini.</p>
+                  <p className="text-sm text-gray-400 dark:text-gray-500 py-4 text-center">Tidak ada data checklist untuk sesi ini.</p>
                 ) : (
                   <Table>
                     <TableHeader>

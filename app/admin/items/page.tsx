@@ -150,7 +150,7 @@ export default function ItemsPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Master Barang</h1>
-          <p className="text-gray-500 text-sm mt-1">Kelola inventaris aset di setiap laboratorium</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Kelola inventaris aset di setiap laboratorium</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => setImportOpen(true)} className="gap-2">
@@ -172,7 +172,7 @@ export default function ItemsPage() {
             {labs.map((l) => <SelectItem key={l.id} value={String(l.id)}>{l.name}</SelectItem>)}
           </SelectContent>
         </Select>
-        <span className="text-sm text-gray-400">{filtered.length} item</span>
+        <span className="text-sm text-gray-400 dark:text-gray-500">{filtered.length} item</span>
       </div>
 
       <Card>
@@ -190,7 +190,7 @@ export default function ItemsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {filtered.length === 0 && <TableRow><TableCell colSpan={7} className="text-center text-gray-400 py-10">Belum ada data barang.</TableCell></TableRow>}
+              {filtered.length === 0 && <TableRow><TableCell colSpan={7} className="text-center text-gray-400 dark:text-gray-500 py-10">Belum ada data barang.</TableCell></TableRow>}
               {filtered.map((item) => {
                 const diff = item.initial_quantity - item.functional_quantity;
                 const isCritical = item.functional_quantity < item.initial_quantity * 0.5;
@@ -346,7 +346,7 @@ export default function ItemsPage() {
             </DialogTitle>
           </DialogHeader>
           {historyRows.length === 0 ? (
-            <p className="text-sm text-gray-400 py-6 text-center">Belum ada riwayat penggunaan.</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500 py-6 text-center">Belum ada riwayat penggunaan.</p>
           ) : (
             <div className="max-h-96 overflow-y-auto">
               <Table>
@@ -441,7 +441,7 @@ export default function ItemsPage() {
                       {importRows.map((r, i) => (
                         <TableRow key={i}>
                           <TableCell className="text-xs py-1.5">{r.name}</TableCell>
-                          <TableCell className="text-xs py-1.5 text-gray-500">{labMap[r.lab_id]}</TableCell>
+                          <TableCell className="text-xs py-1.5 text-gray-500 dark:text-gray-400">{labMap[r.lab_id]}</TableCell>
                           <TableCell className="text-xs py-1.5 text-center">{r.initial_quantity}</TableCell>
                         </TableRow>
                       ))}

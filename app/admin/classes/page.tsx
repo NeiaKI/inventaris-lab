@@ -60,7 +60,7 @@ export default function ClassesPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Akun Kelas</h1>
-          <p className="text-gray-500 text-sm mt-1">Kelola akun login untuk Ketua Kelas</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Kelola akun login untuk Ketua Kelas</p>
         </div>
         <Button onClick={openCreate} className="bg-blue-600 hover:bg-blue-700"><Plus className="h-4 w-4 mr-2" />Tambah Kelas</Button>
       </div>
@@ -78,13 +78,13 @@ export default function ClassesPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {classes.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-gray-400 py-10">Belum ada akun kelas.</TableCell></TableRow>}
+              {classes.length === 0 && <TableRow><TableCell colSpan={5} className="text-center text-gray-400 dark:text-gray-500 py-10">Belum ada akun kelas.</TableCell></TableRow>}
               {classes.map((c, idx) => (
                 <TableRow key={c.id}>
-                  <TableCell className="text-gray-400 text-sm">{idx + 1}</TableCell>
+                  <TableCell className="text-gray-400 dark:text-gray-500 text-sm">{idx + 1}</TableCell>
                   <TableCell className="font-medium">{c.name}</TableCell>
                   <TableCell className="text-gray-600 dark:text-gray-300 font-mono text-sm">{c.username}</TableCell>
-                  <TableCell><span className="font-mono text-sm bg-gray-100 px-2 py-0.5 rounded text-gray-500">{"•".repeat(Math.min(c.password.length, 8))}</span></TableCell>
+                  <TableCell><span className="font-mono text-sm bg-gray-100 dark:bg-gray-700 px-2 py-0.5 rounded text-gray-500 dark:text-gray-400">{"•".repeat(Math.min(c.password.length, 8))}</span></TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
                       <Button size="sm" variant="outline" onClick={() => openReset(c)} title="Reset Password"><KeyRound className="h-3.5 w-3.5" /></Button>

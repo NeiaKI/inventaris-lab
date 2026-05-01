@@ -28,7 +28,7 @@ function SimpleBarChart({ data }: { data: { label: string; value: number; color?
             height: `${Math.max((d.value / max) * 120, d.value > 0 ? 4 : 0)}px`,
             backgroundColor: d.color ?? "#3b82f6",
           }} />
-          <span className="text-xs text-gray-400 text-center leading-tight truncate w-full text-center">{d.label}</span>
+          <span className="text-xs text-gray-400 dark:text-gray-500 text-center leading-tight truncate w-full text-center">{d.label}</span>
         </div>
       ))}
     </div>
@@ -93,7 +93,7 @@ export default function StatsPage() {
     <div className="p-8">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Statistik</h1>
-        <p className="text-gray-500 text-sm mt-1">Tren penggunaan dan kondisi laboratorium</p>
+        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Tren penggunaan dan kondisi laboratorium</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
@@ -107,7 +107,7 @@ export default function StatsPage() {
           </CardHeader>
           <CardContent>
             {sessionsPerMonth.length === 0 ? (
-              <p className="text-sm text-gray-400 py-8 text-center">Belum ada data sesi.</p>
+              <p className="text-sm text-gray-400 dark:text-gray-500 py-8 text-center">Belum ada data sesi.</p>
             ) : (
               <SimpleBarChart data={sessionsPerMonth} />
             )}
@@ -124,7 +124,7 @@ export default function StatsPage() {
           </CardHeader>
           <CardContent>
             {sessionsPerLab.length === 0 ? (
-              <p className="text-sm text-gray-400 py-8 text-center">Belum ada data lab.</p>
+              <p className="text-sm text-gray-400 dark:text-gray-500 py-8 text-center">Belum ada data lab.</p>
             ) : (
               <SimpleBarChart data={sessionsPerLab} />
             )}
@@ -184,18 +184,18 @@ export default function StatsPage() {
               const labItems = items.filter((i) => i.lab_id === lab.id);
               const brokenCount = labItems.filter((i) => i.functional_quantity < i.initial_quantity).length;
               return (
-                <div key={l.label} className="flex items-center gap-4 p-3 rounded-lg border border-gray-100 hover:border-gray-200 transition">
+                <div key={l.label} className="flex items-center gap-4 p-3 rounded-lg border border-gray-100 dark:border-gray-700 hover:border-gray-200 dark:hover:border-gray-600 transition">
                   <div className="w-7 h-7 rounded-full bg-blue-50 flex items-center justify-center text-xs font-bold text-blue-600">
                     {idx + 1}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-sm">{l.label}</p>
-                    <p className="text-xs text-gray-400">{labItems.length} jenis barang</p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500">{labItems.length} jenis barang</p>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="text-center">
                       <p className="text-lg font-bold text-blue-600">{l.value}</p>
-                      <p className="text-xs text-gray-400">sesi</p>
+                      <p className="text-xs text-gray-400 dark:text-gray-500">sesi</p>
                     </div>
                     {brokenCount > 0 ? (
                       <Badge className="bg-red-100 text-red-700 text-xs gap-1">

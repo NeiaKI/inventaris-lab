@@ -97,7 +97,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             {activeSessions.length === 0 ? (
-              <div className="flex items-center gap-2 text-gray-500 text-sm py-4">
+              <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-sm py-4">
                 <CheckCircle2 className="h-4 w-4 text-green-500" />
                 Tidak ada sesi aktif saat ini.
               </div>
@@ -155,7 +155,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent className="pb-3">
             {alerts.length === 0 ? (
-              <div className="flex items-center gap-2 text-gray-500 text-sm py-4">
+              <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-sm py-4">
                 <CheckCircle2 className="h-4 w-4 text-green-500" />
                 Semua peringatan telah diselesaikan.
               </div>
@@ -214,7 +214,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             {newLostReports.length === 0 ? (
-              <div className="flex items-center gap-2 text-gray-500 text-sm py-4">
+              <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-sm py-4">
                 <CheckCircle2 className="h-4 w-4 text-green-500" />
                 Tidak ada laporan hilang baru.
               </div>

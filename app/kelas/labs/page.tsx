@@ -59,8 +59,8 @@ export default function LabSelectionPage() {
   return (
     <div className="max-w-2xl mx-auto p-6">
       <div className="mb-6">
-        <h1 className="text-xl font-bold text-gray-900">Pilih Laboratorium</h1>
-        <p className="text-gray-500 text-sm mt-1">Pilih lab yang akan digunakan untuk sesi hari ini</p>
+        <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">Pilih Laboratorium</h1>
+        <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Pilih lab yang akan digunakan untuk sesi hari ini</p>
       </div>
 
       {activeSessionByClass && (
@@ -83,12 +83,12 @@ export default function LabSelectionPage() {
             <Card key={lab.id} className={`transition-all ${isBusy && !isMySession ? "opacity-60" : "hover:shadow-md"}`}>
               <CardContent className="p-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className={`p-2.5 rounded-xl ${isBusy ? "bg-gray-100" : "bg-blue-50"}`}>
-                    <FlaskConical className={`h-5 w-5 ${isBusy ? "text-gray-400" : "text-blue-600"}`} />
+                  <div className={`p-2.5 rounded-xl ${isBusy ? "bg-gray-100 dark:bg-gray-700" : "bg-blue-50 dark:bg-blue-950"}`}>
+                    <FlaskConical className={`h-5 w-5 ${isBusy ? "text-gray-400 dark:text-gray-500" : "text-blue-600"}`} />
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-800">{lab.name}</p>
-                    <div className="flex items-center gap-1 text-xs text-gray-400 mt-0.5">
+                    <p className="font-semibold text-gray-800 dark:text-gray-200">{lab.name}</p>
+                    <div className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500 mt-0.5">
                       <MapPin className="h-3 w-3" />{lab.location || "-"}
                       <span className="mx-1">·</span>{itemCountPerLab[lab.id] ?? 0} jenis barang
                     </div>
@@ -122,7 +122,7 @@ export default function LabSelectionPage() {
       <Dialog open={!!confirmLab} onOpenChange={() => setConfirmLab(null)}>
         <DialogContent aria-describedby={undefined}>
           <DialogHeader><DialogTitle>Mulai Sesi?</DialogTitle></DialogHeader>
-          <p className="text-sm text-gray-600">Kamu akan memulai sesi penggunaan <strong>{selectedLab?.name}</strong>. Pastikan kamu benar-benar berada di lab tersebut.</p>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Kamu akan memulai sesi penggunaan <strong>{selectedLab?.name}</strong>. Pastikan kamu benar-benar berada di lab tersebut.</p>
           <DialogFooter>
             <Button variant="outline" onClick={() => setConfirmLab(null)}>Batal</Button>
             <Button onClick={handleStart} className="bg-blue-600 hover:bg-blue-700"><Play className="h-4 w-4 mr-1.5" />Mulai Sesi</Button>

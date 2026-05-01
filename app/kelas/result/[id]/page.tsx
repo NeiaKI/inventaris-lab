@@ -49,7 +49,7 @@ export default function ResultPage() {
 
   if (!session) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] text-gray-400">
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-gray-400 dark:text-gray-500">
         <p>Sesi tidak ditemukan.</p>
         <Button className="mt-4" onClick={() => router.push("/kelas/labs")}>Kembali ke Lab</Button>
       </div>
@@ -94,19 +94,19 @@ export default function ResultPage() {
         </p>
 
         <div className="mt-6 space-y-2 text-left">
-          <div className="flex items-center gap-2 text-sm text-gray-600 bg-white rounded-lg px-4 py-2.5">
+          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800/60 rounded-lg px-4 py-2.5">
             <MapPin className="h-4 w-4 shrink-0 text-gray-400" />
             <div>
               <p className="font-medium">{lab?.name}</p>
-              <p className="text-xs text-gray-400">{kelas?.name}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">{kelas?.name}</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-sm text-gray-600 bg-white rounded-lg px-4 py-2.5">
+          <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 bg-white dark:bg-gray-800/60 rounded-lg px-4 py-2.5">
             <Clock className="h-4 w-4 shrink-0 text-gray-400" />
             <div>
-              <p className="text-xs text-gray-400">Waktu Sesi</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">Waktu Sesi</p>
               <p className="font-medium">{fmt(session.started_at)} – {fmt(session.ended_at)}</p>
-              <p className="text-xs text-gray-400">Durasi: {duration(session.started_at, session.ended_at)}</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500">Durasi: {duration(session.started_at, session.ended_at)}</p>
             </div>
           </div>
         </div>
@@ -126,10 +126,10 @@ export default function ResultPage() {
                 </thead>
                 <tbody>
                   {issueRows.map((r) => (
-                    <tr key={r.lab_item_id} className="bg-white border-t border-red-100">
-                      <td className="px-3 py-2 font-medium text-gray-800">{r.name}</td>
-                      <td className="px-3 py-2 text-center text-gray-600">{r.initial_quantity}</td>
-                      <td className={`px-3 py-2 text-center font-semibold ${r.counted_quantity < r.initial_quantity ? "text-red-600" : "text-gray-800"}`}>
+                    <tr key={r.lab_item_id} className="bg-white dark:bg-gray-800/60 border-t border-red-100 dark:border-red-900/40">
+                      <td className="px-3 py-2 font-medium text-gray-800 dark:text-gray-200">{r.name}</td>
+                      <td className="px-3 py-2 text-center text-gray-600 dark:text-gray-400">{r.initial_quantity}</td>
+                      <td className={`px-3 py-2 text-center font-semibold ${r.counted_quantity < r.initial_quantity ? "text-red-600" : "text-gray-800 dark:text-gray-200"}`}>
                         {r.counted_quantity}
                         {r.counted_quantity < r.initial_quantity && (
                           <span className="ml-1 text-red-400">(-{r.initial_quantity - r.counted_quantity})</span>
@@ -151,7 +151,7 @@ export default function ResultPage() {
           <div className="mt-5 text-left space-y-2">
             <p className="text-xs font-semibold text-red-600 uppercase tracking-wide">Detail Masalah</p>
             {sessionAlerts.map((a) => (
-              <div key={a.id} className="bg-white border border-red-200 rounded-lg px-3 py-2 text-xs text-red-700">{a.message}</div>
+              <div key={a.id} className="bg-white dark:bg-gray-800/60 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2 text-xs text-red-700 dark:text-red-400">{a.message}</div>
             ))}
           </div>
         )}

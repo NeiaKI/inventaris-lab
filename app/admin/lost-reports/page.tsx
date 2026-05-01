@@ -100,7 +100,7 @@ export default function LostReportsPage() {
               </span>
             )}
           </h1>
-          <p className="text-sm text-gray-500 mt-0.5">Laporan barang hilang yang dikirim oleh siswa</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Laporan barang hilang yang dikirim oleh siswa</p>
         </div>
         <div className="flex items-center gap-2">
           <Filter className="h-4 w-4 text-gray-400" />
@@ -120,7 +120,7 @@ export default function LostReportsPage() {
 
       {displayed.length === 0 ? (
         <Card>
-          <CardContent className="py-16 text-center text-gray-400">
+          <CardContent className="py-16 text-center text-gray-400 dark:text-gray-500">
             <AlertTriangle className="h-10 w-10 mx-auto mb-3 opacity-30" />
             <p className="text-sm">Belum ada laporan barang hilang.</p>
           </CardContent>
@@ -147,12 +147,12 @@ export default function LostReportsPage() {
               <TableBody>
                 {displayed.map((r) => (
                   <TableRow key={r.id} className={r.status === "baru" ? "bg-red-50" : ""}>
-                    <TableCell className="text-xs text-gray-500 whitespace-nowrap">{formatDate(r.created_at)}</TableCell>
+                    <TableCell className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDate(r.created_at)}</TableCell>
                     <TableCell className="font-medium text-sm">{r.kelasName}</TableCell>
                     <TableCell className="text-sm">{r.labName}</TableCell>
                     <TableCell className="text-sm font-semibold text-red-700">{r.itemName}</TableCell>
                     <TableCell className="text-xs text-gray-600 dark:text-gray-300 max-w-[160px]">
-                      {r.description || <span className="text-gray-300">-</span>}
+                      {r.description || <span className="text-gray-300 dark:text-gray-600">-</span>}
                     </TableCell>
                     <TableCell>
                       {r.photo_url ? (
@@ -161,7 +161,7 @@ export default function LostReportsPage() {
                           <img src={r.photo_url} alt="foto" className="h-9 w-9 object-cover rounded border border-gray-200 hover:opacity-80 transition-opacity" />
                         </button>
                       ) : (
-                        <ImageIcon className="h-4 w-4 text-gray-200" />
+                        <ImageIcon className="h-4 w-4 text-gray-200 dark:text-gray-600" />
                       )}
                     </TableCell>
                     <TableCell>

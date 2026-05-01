@@ -51,8 +51,8 @@ function QRModal({ lab, onClose }: { lab: Lab; onClose: () => void }) {
           <div className="p-4 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl shadow-sm">
             <canvas ref={canvasRef} />
           </div>
-          <p className="text-xs text-gray-400 text-center break-all max-w-xs">{url}</p>
-          <p className="text-sm text-gray-500 text-center">Scan QR ini untuk langsung menuju halaman login {lab.name}.</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 text-center break-all max-w-xs">{url}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 text-center">Scan QR ini untuk langsung menuju halaman login {lab.name}.</p>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>Tutup</Button>
@@ -101,7 +101,7 @@ export default function LabsPage() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Laboratorium</h1>
-          <p className="text-gray-500 text-sm mt-1">Kelola daftar ruang laboratorium komputer</p>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Kelola daftar ruang laboratorium komputer</p>
         </div>
         <Button onClick={openCreate} className="bg-blue-600 hover:bg-blue-700">
           <Plus className="h-4 w-4 mr-2" />Tambah Lab
@@ -122,11 +122,11 @@ export default function LabsPage() {
             </TableHeader>
             <TableBody>
               {labs.length === 0 && (
-                <TableRow><TableCell colSpan={5} className="text-center text-gray-400 py-10">Belum ada data lab.</TableCell></TableRow>
+                <TableRow><TableCell colSpan={5} className="text-center text-gray-400 dark:text-gray-500 py-10">Belum ada data lab.</TableCell></TableRow>
               )}
               {labs.map((lab, idx) => (
                 <TableRow key={lab.id}>
-                  <TableCell className="text-gray-400 text-sm">{idx + 1}</TableCell>
+                  <TableCell className="text-gray-400 dark:text-gray-500 text-sm">{idx + 1}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <FlaskConical className="h-4 w-4 text-blue-500" />

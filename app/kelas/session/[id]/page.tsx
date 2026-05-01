@@ -143,8 +143,8 @@ export default function ActiveSessionPage() {
         <div className="flex items-center gap-2 mb-1">
           <Badge className="bg-blue-100 text-blue-700"><Clock className="h-3 w-3 mr-1" />Sesi Aktif · {elapsed(session.started_at)}</Badge>
         </div>
-        <h1 className="text-xl font-bold text-gray-900">{lab?.name}</h1>
-        <div className="flex items-center gap-1 text-sm text-gray-500 mt-1">
+        <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">{lab?.name}</h1>
+        <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400 mt-1">
           <MapPin className="h-3.5 w-3.5" />{lab?.location || "-"}
         </div>
       </div>
@@ -209,7 +209,7 @@ export default function ActiveSessionPage() {
               <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-sm text-green-800">
                 Laporan berhasil dikirim. Admin akan segera menindaklanjuti.
               </div>
-              <p className="text-sm text-gray-500">Atau laporkan langsung via WhatsApp:</p>
+              <p className="text-sm text-gray-500 dark:text-gray-400">Atau laporkan langsung via WhatsApp:</p>
               <Button
                 className="w-full bg-green-600 hover:bg-green-700"
                 onClick={handleReportViaWA}
@@ -240,9 +240,9 @@ export default function ActiveSessionPage() {
               </div>
 
               <div className="space-y-1.5">
-                <Label>Keterangan <span className="text-gray-400 font-normal">(opsional)</span></Label>
+                <Label>Keterangan <span className="text-gray-400 dark:text-gray-500 font-normal">(opsional)</span></Label>
                 <textarea
-                  className="w-full border border-gray-200 rounded-md px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-md px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                   rows={3}
                   placeholder="Contoh: Mouse nomor 5 tidak ada di meja saat sesi berakhir..."
                   value={description}
@@ -251,7 +251,7 @@ export default function ActiveSessionPage() {
               </div>
 
               <div className="space-y-1.5">
-                <Label>Foto Kerusakan <span className="text-gray-400 font-normal">(opsional)</span></Label>
+                <Label>Foto Kerusakan <span className="text-gray-400 dark:text-gray-500 font-normal">(opsional)</span></Label>
                 {photoPreview ? (
                   <div className="relative inline-block">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -265,7 +265,7 @@ export default function ActiveSessionPage() {
                     </button>
                   </div>
                 ) : (
-                  <label className="flex items-center gap-2 cursor-pointer border border-dashed border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-500 hover:bg-gray-50 transition-colors">
+                  <label className="flex items-center gap-2 cursor-pointer border border-dashed border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-sm text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                     <Camera className="h-4 w-4 shrink-0" />
                     <span>Ambil foto atau pilih dari galeri</span>
                     <input type="file" accept="image/*" capture="environment" className="hidden" onChange={handlePhotoChange} />

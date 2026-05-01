@@ -46,10 +46,10 @@ export default function HistoryPage() {
   return (
     <div className="max-w-2xl mx-auto p-6">
       <div className="flex items-center gap-3 mb-6">
-        <History className="h-5 w-5 text-gray-500" />
+        <History className="h-5 w-5 text-gray-500 dark:text-gray-400" />
         <div>
-          <h1 className="text-xl font-bold text-gray-900">Riwayat Sesi</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Semua sesi lab yang pernah kamu ikuti</p>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">Riwayat Sesi</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">Semua sesi lab yang pernah kamu ikuti</p>
         </div>
       </div>
 
@@ -75,7 +75,7 @@ export default function HistoryPage() {
                 <CardContent className="p-4 flex items-center gap-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <p className="font-semibold text-gray-800 truncate">{lab?.name ?? "-"}</p>
+                      <p className="font-semibold text-gray-800 dark:text-gray-200 truncate">{lab?.name ?? "-"}</p>
                       <Badge className={`${cfg.className} flex items-center gap-1 shrink-0 text-xs`}>
                         {cfg.icon}{cfg.label}
                       </Badge>
