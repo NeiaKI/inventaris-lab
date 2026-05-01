@@ -8,6 +8,7 @@ import { LayoutDashboard, FlaskConical, Package, Users, ClipboardList, LogOut, A
 import { Button } from "@/components/ui/button";
 import { useLostReports, useAlerts } from "@/lib/store";
 import { NotificationBell } from "./notification-bell";
+import { useLang } from "@/lib/lang";
 
 interface AdminSidebarProps {
   isOpen?: boolean;
@@ -19,21 +20,22 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
   const router = useRouter();
   const [lostReports] = useLostReports();
   const [alerts] = useAlerts();
+  const { t } = useLang();
   const newLostCount = lostReports.filter((r) => r.status === "baru").length;
   const alertCount = alerts.length;
 
   const handleLogout = () => { clearSession(); router.push("/"); };
 
   const navItems = [
-    { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard, badge: alertCount + newLostCount },
-    { href: "/admin/labs", label: "Laboratorium", icon: FlaskConical, badge: 0 },
-    { href: "/admin/items", label: "Master Barang", icon: Package, badge: 0 },
-    { href: "/admin/classes", label: "Akun Kelas", icon: Users, badge: 0 },
-    { href: "/admin/sessions", label: "Log Sesi", icon: ClipboardList, badge: 0 },
-    { href: "/admin/lost-reports", label: "Barang Hilang", icon: AlertTriangle, badge: newLostCount },
-    { href: "/admin/schedule", label: "Jadwal Lab", icon: CalendarDays, badge: 0 },
-    { href: "/admin/stats", label: "Statistik", icon: BarChart3, badge: 0 },
-    { href: "/admin/settings", label: "Pengaturan", icon: Settings, badge: 0 },
+    { href: "/admin/dashboard", label: t.nav.dashboard, icon: LayoutDashboard, badge: alertCount + newLostCount },
+    { href: "/admin/labs", label: t.nav.labs, icon: FlaskConical, badge: 0 },
+    { href: "/admin/items", label: t.nav.items, icon: Package, badge: 0 },
+    { href: "/admin/classes", label: t.nav.classes, icon: Users, badge: 0 },
+    { href: "/admin/sessions", label: t.nav.sessions, icon: ClipboardList, badge: 0 },
+    { href: "/admin/lost-reports", label: t.nav.lostReports, icon: AlertTriangle, badge: newLostCount },
+    { href: "/admin/schedule", label: t.nav.schedule, icon: CalendarDays, badge: 0 },
+    { href: "/admin/stats", label: t.nav.stats, icon: BarChart3, badge: 0 },
+    { href: "/admin/settings", label: t.nav.settings, icon: Settings, badge: 0 },
   ];
 
   return (
@@ -53,8 +55,8 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
             <FlaskConical className="h-5 w-5" />
           </div>
           <div className="leading-tight">
-            <p className="font-semibold text-sm">Inventaris Lab</p>
-            <p className="text-xs" style={{ color: "#9ca3af" }}>SMK Bintang Nusantara</p>
+            <p className="font-semibold text-sm">{t.nav.appName}</p>
+            <p className="text-xs" style={{ color: "#9ca3af" }}>{t.nav.schoolName}</p>
           </div>
         </div>
         <div className="flex items-center gap-1">
@@ -97,12 +99,12 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
           <div className="bg-blue-600 rounded-full h-8 w-8 flex items-center justify-center text-xs font-bold">A</div>
           <div className="text-sm">
             <p className="font-medium">Admin</p>
-            <p className="text-xs" style={{ color: "#9ca3af" }}>Kepala Laboratorium</p>
+            <p className="text-xs" style={{ color: "#9ca3af" }}>{t.nav.role}</p>
           </div>
         </div>
         <Button variant="ghost" size="sm" className="w-full justify-start hover:text-white" style={{ color: "#9ca3af" }} onClick={handleLogout}>
           <LogOut className="h-4 w-4 mr-2" />
-          Keluar
+          {t.common.logout}
         </Button>
       </div>
     </aside>

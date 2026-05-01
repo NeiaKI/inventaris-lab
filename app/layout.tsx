@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+import { LanguageProvider } from "@/lib/lang";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
@@ -16,8 +17,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="id" className={`${geistSans.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="min-h-full" suppressHydrationWarning>
         <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
-          {children}
-          <Toaster richColors position="top-right" />
+          <LanguageProvider>
+            {children}
+            <Toaster richColors position="top-right" />
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>
