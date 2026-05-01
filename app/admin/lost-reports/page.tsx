@@ -19,9 +19,9 @@ const statusLabel: Record<LostReportStatus, string> = {
 };
 
 const statusColor: Record<LostReportStatus, string> = {
-  baru: "bg-red-100 text-red-700 border-red-200",
-  diproses: "bg-yellow-100 text-yellow-700 border-yellow-200",
-  selesai: "bg-green-100 text-green-700 border-green-200",
+  baru: "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800",
+  diproses: "bg-yellow-100 dark:bg-yellow-900/40 text-yellow-700 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800",
+  selesai: "bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800",
 };
 
 function formatDate(iso: string) {
@@ -146,11 +146,11 @@ export default function LostReportsPage() {
               </TableHeader>
               <TableBody>
                 {displayed.map((r) => (
-                  <TableRow key={r.id} className={r.status === "baru" ? "bg-red-50" : ""}>
+                  <TableRow key={r.id} className={r.status === "baru" ? "bg-red-50 dark:bg-red-950/30" : ""}>
                     <TableCell className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">{formatDate(r.created_at)}</TableCell>
-                    <TableCell className="font-medium text-sm">{r.kelasName}</TableCell>
-                    <TableCell className="text-sm">{r.labName}</TableCell>
-                    <TableCell className="text-sm font-semibold text-red-700">{r.itemName}</TableCell>
+                    <TableCell className="font-medium text-sm dark:text-gray-200">{r.kelasName}</TableCell>
+                    <TableCell className="text-sm dark:text-gray-300">{r.labName}</TableCell>
+                    <TableCell className="text-sm font-semibold text-red-700 dark:text-red-400">{r.itemName}</TableCell>
                     <TableCell className="text-xs text-gray-600 dark:text-gray-300 max-w-[160px]">
                       {r.description || <span className="text-gray-300 dark:text-gray-600">-</span>}
                     </TableCell>
@@ -183,7 +183,7 @@ export default function LostReportsPage() {
                       <Button
                         size="sm"
                         variant="outline"
-                        className="h-7 text-xs border-green-400 text-green-700 hover:bg-green-50"
+                        className="h-7 text-xs border-green-400 dark:border-green-700 text-green-700 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-950"
                         onClick={() => handleWA(r)}
                       >
                         <MessageCircle className="h-3.5 w-3.5 mr-1" />WA

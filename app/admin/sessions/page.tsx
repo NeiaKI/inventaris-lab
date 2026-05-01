@@ -197,7 +197,7 @@ export default function SessionsPage() {
                         <Button
                           size="sm"
                           variant="outline"
-                          className="h-7 text-xs border-red-300 text-red-600 hover:bg-red-50"
+                          className="h-7 text-xs border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950"
                           onClick={() => setConfirmSession(s)}
                         >
                           <StopCircle className="h-3.5 w-3.5 mr-1" />
@@ -306,7 +306,7 @@ export default function SessionsPage() {
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4 pt-1">
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-sm text-yellow-800">
+            <div className="bg-yellow-50 dark:bg-yellow-950/40 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4 text-sm text-yellow-800 dark:text-yellow-300">
               Anda akan mengakhiri sesi <strong>{classMap[confirmSession?.class_id ?? 0]}</strong> di{" "}
               <strong>{labMap[confirmSession?.lab_id ?? 0]}</strong> secara paksa.
               <br /><br />
