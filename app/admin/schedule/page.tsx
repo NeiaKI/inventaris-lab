@@ -68,13 +68,13 @@ export default function SchedulePage() {
     }
     if (editing) {
       setSchedules((prev) => prev.map((s) => s.id === editing.id ? {
-        ...s, lab_id: Number(form.lab_id), class_id: form.class_id ? Number(form.class_id) : null,
+        ...s, lab_id: Number(form.lab_id), class_id: (form.class_id && form.class_id !== "none") ? Number(form.class_id) : null,
         day_of_week: form.day_of_week as DayOfWeek, start_time: form.start_time, end_time: form.end_time, subject: form.subject,
       } : s));
       toast.success("Jadwal diperbarui.");
     } else {
       const newSchedule: LabSchedule = {
-        id: Date.now(), lab_id: Number(form.lab_id), class_id: form.class_id ? Number(form.class_id) : null,
+        id: Date.now(), lab_id: Number(form.lab_id), class_id: (form.class_id && form.class_id !== "none") ? Number(form.class_id) : null,
         day_of_week: form.day_of_week as DayOfWeek, start_time: form.start_time, end_time: form.end_time,
         subject: form.subject, created_at: new Date().toISOString(),
       };
