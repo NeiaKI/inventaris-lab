@@ -68,7 +68,7 @@ export default function SettingsPage() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{t.settings.appearance.description}</p>
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 gap-3">
                 {/* Light mode */}
                 <button
                   onClick={() => setTheme("light")}
@@ -129,38 +129,9 @@ export default function SettingsPage() {
                   </div>
                 </button>
 
-                {/* System */}
-                <button
-                  onClick={() => setTheme("system")}
-                  className={`rounded-xl border-2 overflow-hidden transition-all ${theme === "system" ? "border-blue-500 shadow-md" : "border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600"}`}
-                >
-                  <div className="p-2" style={{ background: "linear-gradient(135deg, #f3f4f6 50%, #111827 50%)" }}>
-                    <div className="rounded-lg p-2 space-y-1.5" style={{ background: "linear-gradient(135deg, #ffffff 50%, #1f2937 50%)" }}>
-                      <div className="flex gap-1.5">
-                        <div className="w-4 h-4 rounded" style={{ background: "linear-gradient(135deg, #374151 50%, #e5e7eb 50%)" }} />
-                        <div className="flex-1 space-y-1">
-                          <div className="h-1.5 rounded w-3/4" style={{ background: "linear-gradient(135deg, #d1d5db 50%, #4b5563 50%)" }} />
-                          <div className="h-1 rounded w-1/2" style={{ background: "linear-gradient(135deg, #e5e7eb 50%, #374151 50%)" }} />
-                        </div>
-                      </div>
-                      <div className="grid grid-cols-3 gap-1">
-                        <div className="h-4 rounded" style={{ background: "linear-gradient(135deg, #dbeafe 50%, #1e3a5f 50%)" }} />
-                        <div className="h-4 rounded" style={{ background: "linear-gradient(135deg, #dcfce7 50%, #14532d 50%)" }} />
-                        <div className="h-4 rounded" style={{ background: "linear-gradient(135deg, #f3e8ff 50%, #3b0764 50%)" }} />
-                      </div>
-                    </div>
-                  </div>
-                  <div className={`px-3 py-2 flex items-center justify-between ${theme === "system" ? "bg-blue-50 dark:bg-blue-950" : "bg-white dark:bg-gray-800"}`}>
-                    <div className="flex items-center gap-1.5">
-                      <Monitor className={`h-3.5 w-3.5 ${theme === "system" ? "text-blue-600 dark:text-blue-400" : "text-gray-500 dark:text-gray-400"}`} />
-                      <span className={`text-sm font-medium ${theme === "system" ? "text-blue-700 dark:text-blue-300" : "text-gray-600 dark:text-gray-300"}`}>{t.settings.appearance.system}</span>
-                    </div>
-                    {theme === "system" && <div className="h-2 w-2 rounded-full bg-blue-500" />}
-                  </div>
-                </button>
               </div>
               <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">
-                {theme === "system" ? t.settings.appearance.systemActive : theme === "dark" ? t.settings.appearance.darkActive : t.settings.appearance.lightActive}
+                {theme === "dark" ? t.settings.appearance.darkActive : t.settings.appearance.lightActive}
               </p>
             </CardContent>
           </Card>
