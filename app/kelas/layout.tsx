@@ -3,13 +3,15 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useTheme } from "next-themes";
 import { getSession, clearSession } from "@/lib/auth";
-import { FlaskConical, LogOut, History, ArrowLeft } from "lucide-react";
+import { FlaskConical, LogOut, History, ArrowLeft, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { AuthUser } from "@/lib/types";
 
 export default function KelasLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const { theme, setTheme } = useTheme();
   const [user, setUser] = useState<AuthUser | null>(null);
 
   useEffect(() => {
@@ -34,6 +36,9 @@ export default function KelasLayout({ children }: { children: React.ReactNode })
         </div>
         <div className="flex items-center gap-2">
           {user && <span className="text-sm text-gray-600 dark:text-gray-400 hidden sm:inline">👤 <strong>{user.name}</strong></span>}
+          <Button size="sm" variant="ghost" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 px-2">
+            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </Button>
           <Link href="/kelas/history">
             <Button size="sm" variant="ghost" className="text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100">
               <History className="h-3.5 w-3.5 mr-1.5" />Riwayat
