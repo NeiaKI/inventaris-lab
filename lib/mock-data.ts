@@ -57,3 +57,7 @@ export const ADMIN_CREDENTIALS = { username: "admin", password: "admin123" };
 
 // Ganti nomor WA admin di sini (format: 62xxx tanpa +)
 export const ADMIN_WA_NUMBER = "6289652865939";
+
+// Ganti nomor WA developer di sini (format: 62xxx tanpa +)
+export const DEV_WA_NUMBER = "6289652865939";
+export const DEV_NAME = "NEki";

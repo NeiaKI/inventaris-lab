@@ -30,6 +30,21 @@ export default function LabSelectionPage() {
     setUser(getSession());
   }, []);
 
+  // Auto-expire sessions older than 24 hours
+  useEffect(() => {
+    if (!sessions.length) return;
+    const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+    const expired = sessions.filter(
+      (s) => s.status === "aktif" && new Date(s.started_at).getTime() < cutoff
+    );
+    if (!expired.length) return;
+    const expiredIds = new Set(expired.map((s) => s.id));
+    const now = new Date().toISOString();
+    setSessions((prev) =>
+      prev.map((s) => expiredIds.has(s.id) ? { ...s, status: "pending", ended_at: now } : s)
+    );
+  }, [sessions, setSessions]);
+
   const activeSessionByClass = useMemo(
     () => sessions.find((s) => s.class_id === user?.id && s.status === "aktif"),
     [sessions, user]

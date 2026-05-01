@@ -14,7 +14,7 @@ function getSessionFromCookie(req: NextRequest): AuthUser | null {
   }
 }
 
-export function proxy(req: NextRequest) {
+export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const user = getSessionFromCookie(req);
 

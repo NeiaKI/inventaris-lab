@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { KeyRound, RotateCcw, Eye, EyeOff, ShieldAlert, Loader2, Sun, Moon, Monitor } from "lucide-react";
+import { KeyRound, RotateCcw, Eye, EyeOff, ShieldAlert, Loader2, Sun, Moon, Monitor, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
+import { DEV_WA_NUMBER, DEV_NAME } from "@/lib/mock-data";
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
@@ -215,6 +216,40 @@ export default function SettingsPage() {
             {savingPwd ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <KeyRound className="h-4 w-4 mr-2" />}
             Simpan Password Baru
           </Button>
+        </CardContent>
+      </Card>
+
+      <Card className="mb-6">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-base flex items-center gap-2 dark:text-gray-100">
+            <MessageCircle className="h-4 w-4 text-green-500" />
+            Hubungi Developer
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center gap-4 mb-4">
+            <div className="h-12 w-12 rounded-full bg-green-100 dark:bg-green-900/40 flex items-center justify-center shrink-0">
+              <MessageCircle className="h-6 w-6 text-green-600 dark:text-green-400" />
+            </div>
+            <div>
+              <p className="font-semibold text-sm text-gray-800 dark:text-gray-100">{DEV_NAME}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Pengembang Sistem Inventaris Lab</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">+{DEV_WA_NUMBER}</p>
+            </div>
+          </div>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+            Butuh bantuan teknis, penambahan fitur, atau laporkan bug? Hubungi developer langsung melalui WhatsApp.
+          </p>
+          <a
+            href={`https://wa.me/${DEV_WA_NUMBER}?text=Halo%20${encodeURIComponent(DEV_NAME)}%2C%20saya%20ingin%20bertanya%20mengenai%20Sistem%20Inventaris%20Lab%20SMK%20Bintang%20Nusantara.`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Button className="bg-green-600 hover:bg-green-700 text-white">
+              <MessageCircle className="h-4 w-4 mr-2" />
+              Chat via WhatsApp
+            </Button>
+          </a>
         </CardContent>
       </Card>
 
