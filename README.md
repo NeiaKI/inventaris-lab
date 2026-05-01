@@ -122,8 +122,3 @@ lib/
 
 middleware.ts       # Proteksi rute /admin/* dan /kelas/*
 ```
-
-## Developer
-
-Dikembangkan oleh **NEki** untuk tugas PKM SMK Bintang Nusantara.  
-Pertanyaan & saran: hubungi via WhatsApp di halaman **Admin → Pengaturan**.
